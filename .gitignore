@@ -1,6 +1,6 @@
-data/csv/**
-data/json/**
+data/
 
+.vscode/
 venv/
 __pycache__/
 *.pyc
