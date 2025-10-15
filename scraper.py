@@ -10,12 +10,14 @@ import bs4
 from typing import Literal
 
 
+BASE_PATH = pathlib.Path(__file__).parent/"data"
+
+
 class Parser:
     def __init__(self, parser: str, output_type: Literal["json", "csv"]="csv"):
         self.parser = parser
         self.output_type = output_type
 
-        self._base_path = pathlib.Path(__file__).parent/"data"
         self._page_scraped_ix = 0
         self.__soup: bs4.BeautifulSoup = None
         self.__main_container: bs4.element.Tag = None
@@ -147,7 +149,7 @@ class Parser:
             chapter = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         
         outfile = open(
-            self._base_path/self.output_type/f"{self._page_scraped_ix}_{chapter}.{self.output_type}",
+            BASE_PATH/self.output_type/f"{self._page_scraped_ix}_{chapter}.{self.output_type}",
             "w",
             encoding="utf-8",
             newline=""
@@ -181,6 +183,46 @@ class Parser:
         return cleaned[:255]
 
 
+class Inserter:
+    def __init__(self, output_type="csv"):
+        self.output_type = output_type
+    
+    def insert_custom(self):
+        if self.output_type == "csv":
+            for f in (BASE_PATH/"custom_lines").iterdir():
+                logging.info(f"Copying file {f.name} to csv/ directory")
+
+                in_path = (f).as_posix()
+                in_file = open(in_path, "r", encoding="utf-8", newline="")
+                reader = csv.reader(in_file, quotechar='"', quoting=csv.QUOTE_ALL)
+
+                out_path = (BASE_PATH/"csv"/f.name).as_posix()
+                out_file = open(out_path, "w", encoding="utf-8", newline="")
+                writer = csv.writer(out_file, quotechar='"', quoting=csv.QUOTE_ALL)
+
+                # Track the last dialogue index and current line index across rows
+                last_dialogue_index = None
+                line_index = 0
+                for i, row in enumerate(list(reader)):
+                    if i == 0:
+                        # Insert header
+                        row.insert(3, "line_index")
+                    else:
+                        curr_dialogue_index = row[2]
+                        if last_dialogue_index is None or curr_dialogue_index != last_dialogue_index:
+                            # New dialogue: reset counter
+                            line_index = 0
+                        else:
+                            # Same dialogue: increment
+                            line_index += 1
+
+                        row.insert(3, str(line_index))
+                        last_dialogue_index = curr_dialogue_index
+
+                    writer.writerow(row)
+        else:
+            logging.error("Inserter only supports csv files")
+
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     logger = logging.getLogger(__name__)
@@ -190,9 +232,11 @@ if __name__ == "__main__":
         "clair-obscur-expedition-33-game-transcript-all-dialogues/"
         "clair-obscur-expedition-33-the-gommage-dawnborn/"
     )
-    # starting_webpage = "https://www.dawnborn.com/game-transcripts/clair-obscur-expedition-33-game-transcript-all-dialogues/the-monolith/"
     
     parser = Parser("html.parser", output_type="csv")
     parser.load_page(starting_webpage)
 
     parser.main()
+
+    inserter = Inserter(output_type="csv")
+    inserter.insert_custom()
