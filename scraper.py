@@ -77,35 +77,49 @@ class Parser:
     
     def parse_dialogues(self, chapter: str=None) -> list:
         dialogues = []
+        last_speaker = None
         for i, p in enumerate(self.__paragraphs):
-            speaker = None
             try:
                 parent_class = " ".join(p.parent.attrs["class"])
                 if "wp-block-group info-card" in parent_class:
                     # Dialogue from the narrator
-                    speaker = "narrator"
+                    last_speaker = "narrator"
             except KeyError:
                 pass
 
             lines = []
-            last_speaker = speaker
             index = 0
-            for child in p.children:
+            for child_ix, child in enumerate(list(p.children)):
                 if child.name == "strong":
                     # New speaker
                     last_speaker = child.text.strip().replace(":", "")
                 elif child.name is None or child.name == "em":
                     # Dialogue line
-                    line = child.text.strip()
+                    line:str = child.text.strip()
+
+                    if child.name == "em":
+                        if not (line.startswith("(") and line.endswith(")")):
+                            # Lines of the narrator are not enclosed between parenthesis. If they are, they
+                            # are considered a "line of thought" of the character
+                            speaker = "narrator"
+                        
+                        if child_ix != 0:
+                            # Sometimes, in a line, italics can be used as reinforcement. In the website,
+                            # italics is also used to highlight narrator speaking. We consider the narrator
+                            # speaking only if the line in italics is the first (and only) line in the paragraph
+                            speaker = last_speaker
+                    else:
+                        speaker = last_speaker
+
                     if line:
                         if self.output_type == "json":
                             lines.append({
                                 "line_index": index,
-                                "speaker": last_speaker,
+                                "speaker": speaker,
                                 "line": line
                             })
                         elif self.output_type == "csv":
-                            lines.append([self._page_scraped_ix, chapter, i, index, last_speaker, line])
+                            lines.append([self._page_scraped_ix, chapter, i, index, speaker, line])
                         index += 1
                 else:
                     # Line breaks or other tags
@@ -176,6 +190,7 @@ if __name__ == "__main__":
         "clair-obscur-expedition-33-game-transcript-all-dialogues/"
         "clair-obscur-expedition-33-the-gommage-dawnborn/"
     )
+    # starting_webpage = "https://www.dawnborn.com/game-transcripts/clair-obscur-expedition-33-game-transcript-all-dialogues/the-monolith/"
     
     parser = Parser("html.parser", output_type="csv")
     parser.load_page(starting_webpage)
