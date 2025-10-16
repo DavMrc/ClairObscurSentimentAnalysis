@@ -1,3 +1,4 @@
 beautifulsoup4==4.14.2
 requests==2.32.5
-transformers[torch]==4.57.0
+pandas==2.3.3
+openai==2.4.0
