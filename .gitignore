@@ -1,6 +1,8 @@
 data/
+venv/
+tests/
 
 .vscode/
-venv/
+
 __pycache__/
 *.pyc
