@@ -196,6 +196,9 @@ class Editor:
             logging.info("Beginning custom deletes")
             self._deletes(edit_rules["deletes"])
 
+            logging.info("Removing narrator dialogues")
+            self._delete_narrator()
+
             logging.info("Beginning custom inserts")
             self._inserts(edit_rules["inserts"])
         else:
@@ -257,6 +260,14 @@ class Editor:
 
             df_filtered = source_df[mask].reset_index(drop=True)
             df_filtered.to_csv(path, quotechar='"', quoting=csv.QUOTE_ALL, index=False)
+
+    def _delete_narrator(self):
+        for csv_ in (BASE_PATH/"csv").iterdir():
+            logging.info(f"Removing narrator dialogues from {csv_.name}")
+            path = csv_.as_posix()
+            df = pd.read_csv(path, quotechar='"', quoting=csv.QUOTE_ALL)
+            df = df[df["speaker"] != "narrator"]
+            df.to_csv(path, quoting=csv.QUOTE_ALL, quotechar='"', index=False)
 
 
 if __name__ == "__main__":
