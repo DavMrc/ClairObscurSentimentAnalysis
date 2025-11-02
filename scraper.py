@@ -189,7 +189,7 @@ class Editor:
     def __init__(self, output_type="csv"):
         self.output_type = output_type
     
-    def main(self):
+    def main(self, args):
         if self.output_type == "csv":
             edit_rules_f = open(BASE_PATH/"csv/edits/rules.json", "r")
             edit_rules = json.load(edit_rules_f)
@@ -197,11 +197,16 @@ class Editor:
             logging.info("Beginning custom deletes")
             self._deletes(edit_rules["deletes"])
 
-            logging.info("Removing narrator dialogues")
-            self._delete_narrator()
+            if args.keep_narrator is False:
+                logging.info("Removing narrator dialogues")
+                self._delete_narrator()
 
             logging.info("Beginning custom inserts")
             self._inserts(edit_rules["inserts"])
+
+            if args.keep_gibberish is False:
+                logging.info("Prefixing gibberish lines")
+                self._prefix_gibberish()
         else:
             logging.error("Inserter only supports csv files")
 
@@ -270,6 +275,32 @@ class Editor:
             df = df[df["speaker"] != "narrator"]
             df.to_csv(path, quoting=csv.QUOTE_ALL, quotechar='"', index=False)
 
+    def _prefix_gibberish(self):
+        gibberish_classes = [
+            'fading', 'gestral', 'grandis', 'faceless'
+        ]
+        gibberish_speakers = [
+            'The Curator', 'Noco', 'Young boy', 'Lady of Sap', 'Golgra', 'Jar', '???',
+            'Karatom', 'Tropa', 'Peron', 'Olivierso', 'Jujubree', 'Berrami',
+            'Eesda', 'Alexcyclo', 'Victorifo', 'Limonsol'
+        ]
+        for csv_ in (BASE_PATH/"csv").iterdir():
+            logging.info(f"Prefixing gibberish lines in {csv_.name}")
+            path = csv_.as_posix()
+            df = pd.read_csv(path, quotechar='"', quoting=csv.QUOTE_ALL)
+
+            # Add "(gibberish) " prefix to lines where speaker is in gibberish_speakers
+            # or contains any word in speaker_classes
+            prefix = "(gibberish) "
+            mask = ((
+                    df["speaker"].isin(gibberish_speakers) |
+                    df["speaker"].str.contains('|'.join(gibberish_classes), case=False, na=False)
+                ) &
+                ~df["line"].str.contains(prefix, case=False, na=False, regex=False)
+            )
+            df.loc[mask, "line"] = prefix + df.loc[mask, "line"]
+
+            df.to_csv(path, quoting=csv.QUOTE_ALL, quotechar='"', index=False)
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
@@ -278,7 +309,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run the scraper and editor.")
     parser.add_argument("--no-scraper", action="store_true", help="Do not run the Scraper")
     parser.add_argument("--no-editor", action="store_true", help="Do not run the Editor")
+    parser.add_argument("--keep-narrator", action="store_true", help="Keep the narrator lines")
+    parser.add_argument("--keep-gibberish", action="store_true", help="Do not add a \"(gibberish)\" prefix to all the lines in gibberish")
     args = parser.parse_args()
+    logging.info(f"Running with arguments: {args}")
 
     starting_webpage = (
         "https://www.dawnborn.com/game-transcripts/"
@@ -293,4 +327,4 @@ if __name__ == "__main__":
 
     if args.no_editor is False:
         editor = Editor(output_type="csv")
-        editor.main()
+        editor.main(args)
