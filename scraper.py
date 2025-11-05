@@ -9,16 +9,14 @@ import csv
 import json
 import bs4
 import pandas as pd
-from typing import Literal
 
 
 BASE_PATH = pathlib.Path(__file__).parent/"data"
 
 
-class Parser:
-    def __init__(self, parser: str, output_type: Literal["json", "csv"]="csv"):
+class Parser(object):
+    def __init__(self, parser: str):
         self.parser = parser
-        self.output_type = output_type
 
         self._page_scraped_ix = 0
         self.__soup: bs4.BeautifulSoup = None
@@ -116,35 +114,15 @@ class Parser:
                         speaker = last_speaker
 
                     if line:
-                        if self.output_type == "json":
-                            lines.append({
-                                "line_index": index,
-                                "speaker": speaker,
-                                "line": line
-                            })
-                        elif self.output_type == "csv":
-                            lines.append([self._page_scraped_ix, chapter, i, index, speaker, line])
+                        lines.append([self._page_scraped_ix, chapter, i, index, speaker, line])
                         index += 1
                 else:
                     # Line breaks or other tags
                     pass
 
-            if self.output_type == "json":
-                dialogue = {}
-                dialogue["dialogue_index"] = i
-                dialogue["lines"] = lines
-                dialogues.append(dialogue)
-            elif self.output_type == "csv":
-                dialogues.append(lines)
+            dialogues.append(lines)
 
-        if self.output_type == "json":
-            return {
-                "chapter_index": self._page_scraped_ix,
-                "chapter": chapter,
-                "dialogues": dialogues
-            }
-        elif self.output_type == "csv":
-            return dialogues
+        return dialogues
 
     def write(self, dialogues: list, chapter: str=None):
         if chapter is None:
@@ -152,26 +130,16 @@ class Parser:
         
         chapter = self.__file_name_safe(chapter)
         outfile = open(
-            BASE_PATH/self.output_type/f"{self._page_scraped_ix}_{chapter}.{self.output_type}",
+            BASE_PATH/f"csv/{self._page_scraped_ix}_{chapter}.csv",
             "w",
             encoding="utf-8",
             newline=""
         )
-        if self.output_type == "json":
-            # Write JSON
-            json.dump(
-                dialogues,
-                outfile,
-                indent=2,
-                ensure_ascii=False
-            )
-        elif self.output_type == "csv":
-            # Write CSV
-            writer = csv.writer(outfile, quotechar='"', quoting=csv.QUOTE_ALL)
-            writer.writerow(["chapter_index", "chapter", "dialogue_index", "line_index", "speaker", "line"])
-            # Unpack list of lists
-            for dialogue in dialogues:
-                writer.writerows(dialogue)
+        writer = csv.writer(outfile, quotechar='"', quoting=csv.QUOTE_ALL)
+        writer.writerow(["chapter_index", "chapter", "dialogue_index", "line_index", "speaker", "line"])
+        # Unpack list of lists
+        for dialogue in dialogues:
+            writer.writerows(dialogue)
 
     def __file_name_safe(self, title: str):
         # Normalize accents (e.g., é → e)
@@ -302,6 +270,7 @@ class Editor:
 
             df.to_csv(path, quoting=csv.QUOTE_ALL, quotechar='"', index=False)
 
+
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     logger = logging.getLogger(__name__)
@@ -321,10 +290,10 @@ if __name__ == "__main__":
     )
 
     if args.no_scraper is False:
-        parser = Parser("html.parser", output_type="csv")
+        parser = Parser("html.parser")
         parser.load_page(starting_webpage)
         parser.main()
 
     if args.no_editor is False:
-        editor = Editor(output_type="csv")
+        editor = Editor()
         editor.main(args)
