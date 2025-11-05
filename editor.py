@@ -1,6 +1,7 @@
 import logging
 import pathlib
 import csv
+import os
 import json
 import pandas as pd
 from argparse import Namespace
@@ -15,11 +16,56 @@ class Editor(object):
         self.cmd_line_args: Namespace = cmd_line_args
         self.csv_settings = {'quotechar': '"', 'quoting': csv.QUOTE_ALL}
 
+        self.delete_existing_csvs()
+
+    def delete_existing_csvs(self):
+        for f in (CSV_PATH/"edits").iterdir():
+            if f.is_file() and ".csv" in f.name:
+                os.remove(f.as_posix())
+
     def main(self):
-        edit_rules = json.load(open(CSV_PATH/"edits/rules.json", "r"))
+        edit_rules = json.load(open(CSV_PATH/"edits/rules/rules.json", "r"))
 
         logging.info("Beginning custom edits")
-        self._prep_pipeline(edit_rules["deletes"])
+        for chapter_csv in (CSV_PATH/"raw").iterdir():
+            fname = chapter_csv.name.split(".")[0]
+            logging.info(fname)
+            df = pd.read_csv(chapter_csv.as_posix(), **self.csv_settings)
+
+            # 1. Delete custom row ranges
+            for split_rule in edit_rules["deletes"]:
+                if fname == split_rule["source"]:
+                    ranges = split_rule['ranges']
+                    logging.info(f"Deleting rows from {fname} based on ranges:\n{ranges}")
+                    df = self._deletes(df, ranges)
+
+            # 2. Delete narrator
+            if self.cmd_line_args.keep_narrator is False:
+                logging.info(f"Removing narrator dialogues from {fname}")
+                df = self._delete_narrator(df)
+
+            # 3. Prefix gibberish
+            if self.cmd_line_args.keep_gibberish is False:
+                logging.info(f"Prefixing gibberish lines in {fname}")
+                df = self._prefix_gibberish(df)
+            
+            # 4. Split into multiple files
+            file_was_written_as_splits = False
+            for split_rule in edit_rules["splits"]:
+                if fname == split_rule["source"]:
+                    splits = split_rule["ranges"]
+                    logging.info(f"Splitting {fname} in multiple files according to:\n{splits}")
+
+                    slices = self._splits(df, splits)
+                    for i, slice in enumerate(slices):
+                        slice.to_csv(CSV_PATH/f"edits/{fname}_{i}.csv", index=False, **self.csv_settings)
+                    
+                    file_was_written_as_splits = True
+                    break
+
+            if not file_was_written_as_splits:
+                df.to_csv(CSV_PATH/f"edits/{fname}.csv", index=False, **self.csv_settings)
+            logging.info("---")
         
         # Handle custom inserts
         logging.info("Beginning custom inserts")
@@ -28,7 +74,7 @@ class Editor(object):
     def _inserts(self, inserts: list):
         for i in inserts:
             fname = i+".csv"
-            logging.info(f"Copying file {fname} to csv/ directory")
+            logging.info(f"Copying file {fname}")
 
             in_path = (CSV_PATH/"edits/custom_inserts"/fname).as_posix()
             in_file = open(in_path, "r", encoding="utf-8", newline="")
@@ -57,32 +103,31 @@ class Editor(object):
                     row.insert(3, str(line_index))
                     last_dialogue_index = curr_dialogue_index
 
-                writer.writerow(row)
+                writer.writerow(row)   
 
-    def _prep_pipeline(self, deletes: list):
-        for chapter_csv in (CSV_PATH/"raw").iterdir():
-            fname = chapter_csv.name
-            logging.info(fname)
-            df = pd.read_csv(chapter_csv.as_posix(), **self.csv_settings)
+    def _splits(self, df: pd.DataFrame, splits: list) -> list[pd.DataFrame]:        
+        slices = []
+        for split in splits:
+            dial_s, line_s = split["dial_s"], split["line_s"]
+            dial_e, line_e = split["dial_e"], split["line_e"]
 
-            # Delete custom row ranges
-            for del_rule in deletes:
-                if fname == del_rule["source"]:
-                    ranges = del_rule['ranges']
-                    logging.info(f"Deleting rows from {fname} based on ranges:\n{ranges}")
-                    df = self._deletes(df, ranges)
+            # start condition
+            start_mask = (df["dialogue_index"] > dial_s) | (
+                (df["dialogue_index"] == dial_s) & (df["line_index"] >= line_s)
+            )
+            # end condition
+            if dial_e == -1 and line_e == -1:
+                # take everything after start
+                mask = start_mask
+            else:
+                end_mask = (df["dialogue_index"] < dial_e) | (
+                    (df["dialogue_index"] == dial_e) & (df["line_index"] <= line_e)
+                )
+                mask = start_mask & end_mask
 
-            # Delete narrator
-            if self.cmd_line_args.keep_narrator is False:
-                logging.info(f"Removing narrator dialogues from {fname}")
-                df = self._delete_narrator(df)
-
-            # Prefix gibberish
-            if self.cmd_line_args.keep_gibberish is False:
-                logging.info("Prefixing gibberish lines")
-                df = self._prefix_gibberish(df)
-
-            df.to_csv(CSV_PATH/f"edits/{fname}", index=False, **self.csv_settings)
+            slices.append(df[mask].copy())
+        
+        return slices
 
     def _deletes(self, df: pd.DataFrame, ranges: list[dict]):
         del_ranges = pd.DataFrame(ranges)
