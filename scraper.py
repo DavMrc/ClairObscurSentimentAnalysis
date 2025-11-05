@@ -7,6 +7,7 @@ import logging
 import csv
 import json
 import bs4
+import pandas as pd
 from typing import Literal
 
 
@@ -148,13 +149,13 @@ class Parser:
         if chapter is None:
             chapter = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         
+        chapter = self.__file_name_safe(chapter)
         outfile = open(
             BASE_PATH/self.output_type/f"{self._page_scraped_ix}_{chapter}.{self.output_type}",
             "w",
             encoding="utf-8",
             newline=""
         )
-        chapter = self.__file_name_safe(chapter)
         if self.output_type == "json":
             # Write JSON
             json.dump(
@@ -183,45 +184,80 @@ class Parser:
         return cleaned[:255]
 
 
-class Inserter:
+class Editor:
     def __init__(self, output_type="csv"):
         self.output_type = output_type
     
-    def insert_custom(self):
+    def main(self):
         if self.output_type == "csv":
-            for f in (BASE_PATH/"custom_lines").iterdir():
-                logging.info(f"Copying file {f.name} to csv/ directory")
+            edit_rules_f = open(BASE_PATH/"csv/edits/rules.json", "r")
+            edit_rules = json.load(edit_rules_f)
 
-                in_path = (f).as_posix()
-                in_file = open(in_path, "r", encoding="utf-8", newline="")
-                reader = csv.reader(in_file, quotechar='"', quoting=csv.QUOTE_ALL)
+            logging.info("Beginning custom deletes")
+            self._deletes(edit_rules["deletes"])
 
-                out_path = (BASE_PATH/"csv"/f.name).as_posix()
-                out_file = open(out_path, "w", encoding="utf-8", newline="")
-                writer = csv.writer(out_file, quotechar='"', quoting=csv.QUOTE_ALL)
-
-                # Track the last dialogue index and current line index across rows
-                last_dialogue_index = None
-                line_index = 0
-                for i, row in enumerate(list(reader)):
-                    if i == 0:
-                        # Insert header
-                        row.insert(3, "line_index")
-                    else:
-                        curr_dialogue_index = row[2]
-                        if last_dialogue_index is None or curr_dialogue_index != last_dialogue_index:
-                            # New dialogue: reset counter
-                            line_index = 0
-                        else:
-                            # Same dialogue: increment
-                            line_index += 1
-
-                        row.insert(3, str(line_index))
-                        last_dialogue_index = curr_dialogue_index
-
-                    writer.writerow(row)
+            logging.info("Beginning custom inserts")
+            self._inserts(edit_rules["inserts"])
         else:
             logging.error("Inserter only supports csv files")
+
+    def _inserts(self, inserts: list):
+        for i in inserts:
+            fname = i+".csv"
+            logging.info(f"Copying file {fname} to csv/ directory")
+
+            in_path = (BASE_PATH/"edits/inserts"/fname).as_posix()
+            in_file = open(in_path, "r", encoding="utf-8", newline="")
+            reader = csv.reader(in_file, quotechar='"', quoting=csv.QUOTE_ALL)
+
+            out_path = (BASE_PATH/"csv"/fname).as_posix()
+            out_file = open(out_path, "w", encoding="utf-8", newline="")
+            writer = csv.writer(out_file, quotechar='"', quoting=csv.QUOTE_ALL)
+
+            # Track the last dialogue index and current line index across rows
+            last_dialogue_index = None
+            line_index = 0
+            for i, row in enumerate(list(reader)):
+                if i == 0:
+                    # Insert header
+                    row.insert(3, "line_index")
+                else:
+                    curr_dialogue_index = row[2]
+                    if last_dialogue_index is None or curr_dialogue_index != last_dialogue_index:
+                        # New dialogue: reset counter
+                        line_index = 0
+                    else:
+                        # Same dialogue: increment
+                        line_index += 1
+
+                    row.insert(3, str(line_index))
+                    last_dialogue_index = curr_dialogue_index
+
+                writer.writerow(row)
+
+    def _deletes(self, deletes: list):
+        for d in deletes:
+            fname = d["source"]+".csv"
+            path = (BASE_PATH/"csv"/fname).as_posix()
+            source_df = pd.read_csv(path, quotechar='"', quoting=csv.QUOTE_ALL)
+            del_ranges = pd.DataFrame(d["ranges"])
+
+            logging.info(f"Deleting rows from {fname} based on ranges:\n{del_ranges.head()}")
+
+            mask = pd.Series(True, index=source_df.index)
+            for _, r in del_ranges.iterrows():
+                to_delete = (
+                    ((source_df["dialogue_index"] > r["dial_s"]) |
+                    ((source_df["dialogue_index"] == r["dial_s"]) & (source_df["line_index"] >= r["line_s"])))
+                    &
+                    ((source_df["dialogue_index"] < r["dial_e"]) |
+                    ((source_df["dialogue_index"] == r["dial_e"]) & (source_df["line_index"] <= r["line_e"])))
+                )
+                mask &= ~to_delete  # remove these rows
+
+            df_filtered = source_df[mask].reset_index(drop=True)
+            df_filtered.to_csv(path, quotechar='"', quoting=csv.QUOTE_ALL, index=False)
+
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
@@ -235,8 +271,7 @@ if __name__ == "__main__":
     
     parser = Parser("html.parser", output_type="csv")
     parser.load_page(starting_webpage)
-
     parser.main()
 
-    inserter = Inserter(output_type="csv")
-    inserter.insert_custom()
+    editor = Editor(output_type="csv")
+    editor.main()
