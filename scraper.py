@@ -13,8 +13,9 @@ CSV_PATH = BASE_PATH/"csv"
 
 
 class Scraper(object):
-    def __init__(self, parser: str):
+    def __init__(self, parser: str, csv_settings: dict):
         self.parser = parser
+        self.csv_settings = csv_settings
 
         self._page_scraped_ix = 0
         self.__soup: bs4.BeautifulSoup = None
@@ -128,12 +129,12 @@ class Scraper(object):
         
         chapter = self.__file_name_safe(chapter)
         outfile = open(
-            CSV_PATH/f"raw/{self._page_scraped_ix}_{chapter}.csv",
+            CSV_PATH/f"1_raw/{self._page_scraped_ix}_{chapter}.csv",
             "w",
             encoding="utf-8",
             newline=""
         )
-        writer = csv.writer(outfile, quotechar='"', quoting=csv.QUOTE_ALL)
+        writer = csv.writer(outfile, **self.csv_settings)
         writer.writerow(["chapter_index", "chapter", "dialogue_index", "line_index", "speaker", "line"])
         # Unpack list of lists
         for dialogue in dialogues:

@@ -12,23 +12,23 @@ CSV_PATH = BASE_PATH/"csv"
 
 
 class Editor(object):
-    def __init__(self, cmd_line_args: Namespace):
+    def __init__(self, cmd_line_args: Namespace, csv_settings: dict):
         self.cmd_line_args: Namespace = cmd_line_args
-        self.csv_settings = {'quotechar': '"', 'quoting': csv.QUOTE_ALL}
+        self.csv_settings = csv_settings
 
         self.delete_existing_csvs()
 
     def delete_existing_csvs(self):
-        for f in (CSV_PATH/"edits").iterdir():
+        for f in (CSV_PATH/"2_edits").iterdir():
             if f.is_file() and ".csv" in f.name:
                 os.remove(f.as_posix())
 
     def main(self):
-        edit_rules = json.load(open(CSV_PATH/"edits/rules/rules.json", "r"))
+        edit_rules = json.load(open(CSV_PATH/"0_rules/rules.json", "r"))
 
         logging.info("Beginning custom edits")
-        for chapter_csv in (CSV_PATH/"raw").iterdir():
-            fname = chapter_csv.name.split(".")[0]
+        for chapter_csv in (CSV_PATH/"1_raw").iterdir():
+            fname = chapter_csv.stem
             logging.info(fname)
             df = pd.read_csv(chapter_csv.as_posix(), **self.csv_settings)
 
@@ -48,23 +48,8 @@ class Editor(object):
             if self.cmd_line_args.keep_gibberish is False:
                 logging.info(f"Prefixing gibberish lines in {fname}")
                 df = self._prefix_gibberish(df)
-            
-            # 4. Split into multiple files
-            file_was_written_as_splits = False
-            for split_rule in edit_rules["splits"]:
-                if fname == split_rule["source"]:
-                    splits = split_rule["ranges"]
-                    logging.info(f"Splitting {fname} in multiple files according to:\n{splits}")
 
-                    slices = self._splits(df, splits)
-                    for i, slice in enumerate(slices):
-                        slice.to_csv(CSV_PATH/f"edits/{fname}_{i}.csv", index=False, **self.csv_settings)
-                    
-                    file_was_written_as_splits = True
-                    break
-
-            if not file_was_written_as_splits:
-                df.to_csv(CSV_PATH/f"edits/{fname}.csv", index=False, **self.csv_settings)
+            df.to_csv(CSV_PATH/f"2_edits/{fname}.csv", index=False, **self.csv_settings)
             logging.info("---")
         
         # Handle custom inserts
@@ -76,11 +61,11 @@ class Editor(object):
             fname = i+".csv"
             logging.info(f"Copying file {fname}")
 
-            in_path = (CSV_PATH/"edits/custom_inserts"/fname).as_posix()
+            in_path = (CSV_PATH/"2_edits/custom_inserts"/fname).as_posix()
             in_file = open(in_path, "r", encoding="utf-8", newline="")
             reader = csv.reader(in_file, **self.csv_settings)
 
-            out_path = (CSV_PATH/"edits"/fname).as_posix()
+            out_path = (CSV_PATH/"2_edits"/fname).as_posix()
             out_file = open(out_path, "w", encoding="utf-8", newline="")
             writer = csv.writer(out_file, **self.csv_settings)
 
@@ -104,30 +89,6 @@ class Editor(object):
                     last_dialogue_index = curr_dialogue_index
 
                 writer.writerow(row)   
-
-    def _splits(self, df: pd.DataFrame, splits: list) -> list[pd.DataFrame]:        
-        slices = []
-        for split in splits:
-            dial_s, line_s = split["dial_s"], split["line_s"]
-            dial_e, line_e = split["dial_e"], split["line_e"]
-
-            # start condition
-            start_mask = (df["dialogue_index"] > dial_s) | (
-                (df["dialogue_index"] == dial_s) & (df["line_index"] >= line_s)
-            )
-            # end condition
-            if dial_e == -1 and line_e == -1:
-                # take everything after start
-                mask = start_mask
-            else:
-                end_mask = (df["dialogue_index"] < dial_e) | (
-                    (df["dialogue_index"] == dial_e) & (df["line_index"] <= line_e)
-                )
-                mask = start_mask & end_mask
-
-            slices.append(df[mask].copy())
-        
-        return slices
 
     def _deletes(self, df: pd.DataFrame, ranges: list[dict]):
         del_ranges = pd.DataFrame(ranges)
