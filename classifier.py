@@ -11,24 +11,42 @@ import pandas as pd
 import helpers
 
 
-class Chapters:
-    def __init__(self, name:str, parts: list[pathlib.Path], type=typing.Literal["csv", "wav"]):
+class Chapter:
+    def __init__(self, name:str, splits: list[pathlib.Path], type=typing.Literal["csv", "wav"]):
         self.name = name
-        self.parts = parts
+        self.splits = splits
         self.type = type
 
+    def keep_splits(self, ixs: list[int]) -> list[pathlib.Path]:
+        if len(self.splits) == 1:
+            # Do not try to filter anything: current Chapter only has one split
+            return self.splits
+        else:
+            splits = []
+            for i in ixs:
+                for split in self.splits:
+                    if split.stem.endswith(str(i)):
+                        splits.append(split)
+            
+            self.splits = splits
+            return splits
+
     def __repr__(self):
-        return f"Chapters(name={self.name}, type={self.type}, parts={self.parts})"
+        return f"Chapter(name={self.name}, type={self.type}, splits={[spl.name for spl in self.splits]})"
 
 
 class Pair:
-    def __init__(self, chapter:str, csv: Chapters, wav: Chapters):
+    def __init__(self, chapter:str, csv: Chapter, wav: Chapter):
         self.chapter = chapter
         self.csv = csv
         self.wav = wav
 
+    def keep_only_splits(self, indices: list[int]):
+        self.csv.splits = self.csv.keep_splits(indices)
+        self.wav.splits = self.wav.keep_splits(indices)
+
     def __iter__(self):
-        return zip(range(len(self.csv.parts)), iter(self.csv.parts), iter(self.wav.parts))
+        return zip(range(len(self.csv.splits)), iter(self.csv.splits), iter(self.wav.splits))
 
     def __repr__(self):
         return f"Pair(chapter='{self.chapter}', csv={self.csv}, wav={self.wav})"
@@ -116,8 +134,8 @@ class Classifier(object):
         pairs = []
         for _, row in merged_df.iterrows():
             stem = row["stem"]
-            csv_parts = Chapters(name=stem, parts=row["path_csv"], type="csv")
-            wav_parts = Chapters(name=stem, parts=row["path_wav"], type="wav")
+            csv_parts = Chapter(name=stem, splits=row["path_csv"], type="csv")
+            wav_parts = Chapter(name=stem, splits=row["path_wav"], type="wav")
             pair = Pair(chapter=stem, csv=csv_parts, wav=wav_parts)
             pairs.append(pair)
 
@@ -151,9 +169,21 @@ class Classifier(object):
             self.write_outputs(out_responses, out_dfs, chapter)
             logging.info("---")
 
-    def set_chapters(self, chapters:list[str]) -> list[Pair]:
+    def set_chapters(self, chapters:typing.Union[list[str], dict]) -> list[Pair]:
         """
         (Optional) Manually define which chapters to classify.
+
+        If `chapters` is a list of strings: keep only the chapters that match the same name and all its splits.
+        
+        If `chapters` is a dict: must be in the form of `{"chapter_name": [list_of_split_indexes]}`
+
+        Example:
+        ```
+        {
+            "chapter1": [0,1,2...],
+            "chapter2": [0,1,2...]
+        }
+        ```
         """
         if chapters:
             sub_pairs = []
@@ -191,7 +221,7 @@ class Classifier(object):
             return sub_pairs
 
         else:
-            raise ValueError("`chapters` parameter must be a list of chapter names. It can not be empty or null")
+            raise ValueError("`chapters` can not be empty or null")
 
     def prep_dialogue(self, df: pd.DataFrame) -> str:
         """
