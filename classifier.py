@@ -27,9 +27,12 @@ class Chapter:
                 for split in self.splits:
                     if split.stem.endswith(str(i)):
                         splits.append(split)
-            
+
             self.splits = splits
             return splits
+
+    def __len__(self):
+        return len(self.splits)
 
     def __repr__(self):
         return f"Chapter(name={self.name}, type={self.type}, splits={[spl.name for spl in self.splits]})"
@@ -47,6 +50,9 @@ class Pair:
 
     def __iter__(self):
         return zip(range(len(self.csv.splits)), iter(self.csv.splits), iter(self.wav.splits))
+
+    def __len__(self):
+        return len(self.csv)
 
     def __repr__(self):
         return f"Pair(chapter='{self.chapter}', csv={self.csv}, wav={self.wav})"
