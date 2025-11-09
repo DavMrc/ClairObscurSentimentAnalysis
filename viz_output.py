@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import plotly.express as px
 # custom scripts
 import helpers
 
@@ -50,24 +51,43 @@ if load_data_btn:
 
     # Chart
     df: pd.DataFrame = pd.read_csv(selected_file.as_posix(), **helpers.CSV_SETTINGS)
-    df[["chapter_index", "dialogue_index", "line_index"]] = df[["chapter_index", "dialogue_index", "line_index"]].astype(str)
+    df["id"] = df["dialogue_index"].astype(str) + "_" + df["line_index"].astype(str)
 
     col1, col2 = st.columns(2)
     with col1:
-        df["id"] = df["dialogue_index"] + "_" + df["line_index"]
         emotions = [c for c in df.columns.to_list() if c in COLOR_MAP.keys()]
         color_list = [COLOR_MAP.get(e, "#B3B3B3") for e in emotions]
-        st.bar_chart(
-            df,
+
+        df_melt = df.melt(
+            id_vars="id",
+            value_vars=emotions,
+            var_name="emotion",
+            value_name="value"
+        )
+        # Create Plotly bar chart
+        fig = px.bar(
+            df_melt,
             x="id",
-            y=emotions,
-            color=color_list,
-            sort=False,
+            y="value",
+            color="emotion",
+            color_discrete_sequence=color_list,
+            height=500
+        )
+        # Enable horizontal scrolling (range slider)
+        fig.update_layout(
+            xaxis= {
+                "rangeslider": {"visible": True},
+                "type": "category",
+                "range": [0, 30],
+                "tickangle": -90
+            },
             height=500
         )
 
+        st.plotly_chart(fig, use_container_width=True)
+
     # Dialogues table
     with col2:
-        show_columns = ["dialogue_index", "line_index", "speaker", "line"]
+        show_columns = ["id", "speaker", "line"]
         subs_df = df[show_columns]
         st.dataframe(subs_df, hide_index=True)
