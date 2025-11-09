@@ -54,6 +54,9 @@ class Pair:
     def __len__(self):
         return len(self.mp3)
 
+    def __len__(self):
+        return len(self.csv)
+
     def __repr__(self):
         return f"Pair(chapter='{self.chapter}', csv={self.mp3}, mp3={self.mp3})"
 
