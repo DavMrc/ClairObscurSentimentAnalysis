@@ -22,7 +22,7 @@ class Splitter(object):
             if f.is_file():
                 os.remove(f.as_posix())
         
-        logging.info("Deleting existing wav splits")
+        logging.info("Deleting existing mp3 splits")
         for f in (helpers.AUDIO_PATH/"3_splits").iterdir():
             if f.is_file():
                 os.remove(f.as_posix())
@@ -47,9 +47,9 @@ class Splitter(object):
         # Link each wav to its matching csv
         pairs = self._csv_wav_edit_pairs()
         for pair in pairs:
-            logging.info(f"Splitting csv for {pair['csv'].stem}")
+            logging.info(f"Splitting csv for '{pair['csv'].stem}'")
             self._split_csv(pair["csv"])
-            logging.info(f"Splitting audio for {pair['wav'].stem}")
+            logging.info(f"Splitting audio for '{pair['wav'].stem}'")
             self._split_wav(pair["wav"])
             logging.info("---")
 

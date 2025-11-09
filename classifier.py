@@ -12,7 +12,7 @@ import helpers
 
 
 class Chapter:
-    def __init__(self, name:str, splits: list[pathlib.Path], type=typing.Literal["csv", "wav"]):
+    def __init__(self, name:str, splits: list[pathlib.Path], type=typing.Literal["csv", "mp3"]):
         self.name = name
         self.splits = splits
         self.type = type
@@ -39,28 +39,28 @@ class Chapter:
 
 
 class Pair:
-    def __init__(self, chapter:str, csv: Chapter, wav: Chapter):
+    def __init__(self, chapter:str, csv: Chapter, mp3: Chapter):
         self.chapter = chapter
         self.csv = csv
-        self.wav = wav
+        self.mp3 = mp3
 
     def keep_only_splits(self, indices: list[int]):
+        self.mp3.splits = self.mp3.keep_splits(indices)
         self.csv.splits = self.csv.keep_splits(indices)
-        self.wav.splits = self.wav.keep_splits(indices)
 
     def __iter__(self):
-        return zip(range(len(self.csv.splits)), iter(self.csv.splits), iter(self.wav.splits))
+        return zip(range(len(self.csv.splits)), iter(self.csv.splits), iter(self.mp3.splits))
 
     def __len__(self):
-        return len(self.csv)
+        return len(self.mp3)
 
     def __repr__(self):
-        return f"Pair(chapter='{self.chapter}', csv={self.csv}, wav={self.wav})"
+        return f"Pair(chapter='{self.chapter}', csv={self.mp3}, mp3={self.mp3})"
 
 
 class Classifier(object):
     def __init__(self):
-        self.pairs = self.csv_wav_split_pairs()
+        self.pairs = self.csv_mp3_split_pairs()
         self.csv_settings = helpers.CSV_SETTINGS
 
         in_notebook = helpers.in_notebook()
@@ -97,7 +97,7 @@ class Classifier(object):
         - When you reply, do not add any other text. Just reply with a JSON formatted string.
         """
 
-    def csv_wav_split_pairs(self) -> list[Pair]:
+    def csv_mp3_split_pairs(self) -> list[Pair]:
         def list_files(path: pathlib.Path) -> list[dict]:
             pattern = r"(.+)_([0-9]+)$"
             ls = []
@@ -120,25 +120,25 @@ class Classifier(object):
             return ls
 
         csvs = list_files(helpers.CSV_PATH/"3_splits")
-        wavs = list_files(helpers.AUDIO_PATH/"3_splits")
+        mp3s = list_files(helpers.AUDIO_PATH/"3_splits")
 
         csvs_df = pd.DataFrame(csvs).groupby("stem").agg({"path": list})
-        wavs_df = pd.DataFrame(wavs).groupby("stem").agg({"path": list})
+        mp3s_df = pd.DataFrame(mp3s).groupby("stem").agg({"path": list})
 
         merged_df = pd.merge(
             left=csvs_df,
-            right=wavs_df,
+            right=mp3s_df,
             on="stem",
             how="inner",
-            suffixes=["_csv", "_wav"]
+            suffixes=["_csv", "_mp3"]
         ).reset_index()
 
         pairs = []
         for _, row in merged_df.iterrows():
             stem = row["stem"]
             csv_parts = Chapter(name=stem, splits=row["path_csv"], type="csv")
-            wav_parts = Chapter(name=stem, splits=row["path_wav"], type="wav")
-            pair = Pair(chapter=stem, csv=csv_parts, wav=wav_parts)
+            mp3_parts = Chapter(name=stem, splits=row["path_mp3"], type="mp3")
+            pair = Pair(chapter=stem, csv=csv_parts, mp3=mp3_parts)
             pairs.append(pair)
 
         return pairs
@@ -160,7 +160,7 @@ class Classifier(object):
             for i, csv_file, mp3_file in pair:
                 logging.info(f"Opening dataframe and audio for split #{i}")
                 dialogues_df: pd.DataFrame = pd.read_csv(csv_file.as_posix(), **self.csv_settings)
-                audio_data = open(wav_file.as_posix(), "rb").read()
+                audio_data = open(mp3_file.as_posix(), "rb").read()
 
                 logging.info(f"Preparing concat dialogue text and base64 audio for split #{i}")
                 dialogue = self.prep_dialogue(dialogues_df)
@@ -205,7 +205,7 @@ class Classifier(object):
                     if not found_match:
                         logging.warning(f"Chapter '{chapt}' unknown")
 
-                logging.info(f"Chapters set correctely: {[p.chapter for p in self.pairs]}")
+                logging.info(f"Chapters set correctely: {[p.chapter for p in sub_pairs]}")
 
             elif isinstance(chapters, dict):
                 for chapter, splits in chapters.items():
@@ -219,7 +219,7 @@ class Classifier(object):
                     if not found_match:
                         logging.warning(f"Chapter '{chapt}' unknown")
                 
-                logging.info(f"Chapters and splits set correctely: {self.pairs}")
+                logging.info(f"Chapters and splits set correctely: {sub_pairs}")
 
             else:
                 raise ValueError("`chapters` must be a list of chapter names, or a dict like {'chapter1': [0,1...], 'chapter2': [1,2...]}")
@@ -259,26 +259,28 @@ class Classifier(object):
         response = self.__openai_client.chat.completions.create(
             model="gpt-audio",
             temperature=0.1,
+            modalities=["text"],
+            max_completion_tokens=16384,
             messages=[
                 {
-                "role": "system",
-                "content": self.system_message
+                    "role": "system",
+                    "content": self.system_message
                 },
                 {
-                "role": "user",
-                "content": [
-                    {
-                    "type": "text",
-                    "text": dialogues_text
-                    },
-                    {
-                    "type": "input_audio",
-                    "input_audio": {
-                        "data": audio_b64,
-                        "format": "wav"
-                    }
-                    }
-                ]
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": dialogues_text
+                        },
+                        {
+                            "type": "input_audio",
+                            "input_audio": {
+                                "data": audio_b64,
+                                "format": "mp3"
+                            }
+                        }
+                    ]
                 }
             ]
         )
