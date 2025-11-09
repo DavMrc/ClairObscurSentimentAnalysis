@@ -66,10 +66,6 @@ class Classifier(object):
             logging.basicConfig(level=logging.INFO)
             logger = logging.getLogger(__name__)
 
-        # OpenAI client
-        __openai_key = open(helpers.BASE_PATH/"open_ai_token.txt", "r").read()
-        self.__openai_client = openai.OpenAI(api_key = __openai_key)
-
         # Target emotions
         self._negative_emotions = ["anger", "sadness", "fear"]
         self._positive_emotions = ["happiness", "ambitious", "surprise"]
@@ -140,6 +136,11 @@ class Classifier(object):
             pairs.append(pair)
 
         return pairs
+
+    def authorize(self, key: str=None):
+        if not key:
+            key = open(helpers.BASE_PATH/"open_ai_token.txt", "r").read()
+        self.__openai_client = openai.OpenAI(api_key = key)
 
     def main(self):
         logging.info("Beginning classification")
