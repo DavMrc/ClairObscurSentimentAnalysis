@@ -6,12 +6,14 @@ import datetime
 import logging
 import csv
 import bs4
+# custom scripts
+import helpers
 
 
 class Scraper(object):
-    def __init__(self, parser: str, csv_settings: dict):
+    def __init__(self, parser: str):
         self.parser = parser
-        self.csv_settings = csv_settings
+        self.csv_settings = helpers.CSV_SETTINGS
 
         self._page_scraped_ix = 0
         self.__soup: bs4.BeautifulSoup = None

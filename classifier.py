@@ -36,8 +36,7 @@ class Pair:
 
 class Classifier(object):
     def __init__(self):
-        self.path = pathlib.Path().resolve()
-        self.pairs = self._csv_wav_slit_pairs()
+        self.pairs = self.csv_wav_split_pairs()
         self.csv_settings = helpers.CSV_SETTINGS
 
         in_notebook = helpers.in_notebook()
@@ -50,7 +49,7 @@ class Classifier(object):
             logger = logging.getLogger(__name__)
 
         # OpenAI client
-        __openai_key = open(self.path/"data/open_ai_token.txt", "r").read()
+        __openai_key = open(helpers.BASE_PATH/"open_ai_token.txt", "r").read()
         self.__openai_client = openai.OpenAI(api_key = __openai_key)
 
         # Target emotions
@@ -78,7 +77,7 @@ class Classifier(object):
         - When you reply, do not add any other text. Just reply with a JSON formatted string.
         """
 
-    def _csv_wav_slit_pairs(self) -> list[Pair]:
+    def csv_wav_split_pairs(self) -> list[Pair]:
         def list_files(path: pathlib.Path) -> list[dict]:
             pattern = r"(.+)_([0-9]+)$"
             ls = []
@@ -274,7 +273,7 @@ class Classifier(object):
         fname = f"{now}_{emotions_short}"
 
         # Write API response
-        api_response_path = self.path/f"./data/output/api_responses/{chapter}/{fname}.json"
+        api_response_path = helpers.BASE_PATH/f"./output/api_responses/{chapter}/{fname}.json"
         if not api_response_path.parent.exists():
             api_response_path.parent.mkdir()
 
@@ -283,7 +282,7 @@ class Classifier(object):
             logging.info(f"Written API response '{fname}.json'")
 
         # Write dataframe
-        emotions_df_path = self.path/f"./data/output/emotions_scored/{chapter}/{fname}.csv"
+        emotions_df_path = helpers.BASE_PATH/f"./output/emotions_scored/{chapter}/{fname}.csv"
         if not emotions_df_path.parent.exists():
             emotions_df_path.parent.mkdir()
 

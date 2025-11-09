@@ -1,16 +1,17 @@
 import logging
-import pathlib
 import csv
 import os
 import json
 import pandas as pd
 from argparse import Namespace
+# custom scripts
+import helpers
 
 
 class Editor(object):
-    def __init__(self, cmd_line_args: Namespace, csv_settings: dict):
+    def __init__(self, cmd_line_args: Namespace):
         self.cmd_line_args: Namespace = cmd_line_args
-        self.csv_settings = csv_settings
+        self.csv_settings = helpers.CSV_SETTINGS
 
         self.delete_existing_csvs()
 

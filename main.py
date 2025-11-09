@@ -1,13 +1,12 @@
 import argparse
 import logging
-import csv
+# custom scripts
 from editor import Editor
 from scraper import Scraper
 from splitter import Splitter
 
 
 if __name__ == "__main__":
-    csv_settings = {'quotechar': '"', 'quoting': csv.QUOTE_ALL}
     logging.basicConfig(level=logging.INFO)
     logger = logging.getLogger(__name__)
 
@@ -28,16 +27,16 @@ if __name__ == "__main__":
 
     if args.no_scraper is False:
         logging.info("### BEGIN SCRAPER ###")
-        parser = Scraper(parser="html.parser", csv_settings=csv_settings)
+        parser = Scraper(parser="html.parser")
         parser.load_page(starting_webpage)
         parser.main()
 
     if args.no_editor is False:
         logging.info("### BEGIN EDITOR ###")
-        editor = Editor(cmd_line_args=args, csv_settings=csv_settings)
+        editor = Editor(cmd_line_args=args)
         editor.main()
 
         if args.no_splitter is False:
             logging.info("### BEGIN SPLITTER ###")
-            splitter = Splitter(csv_settings=csv_settings)
+            splitter = Splitter()
             splitter.main()
