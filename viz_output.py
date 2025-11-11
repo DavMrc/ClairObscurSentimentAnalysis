@@ -21,6 +21,7 @@ _, col1, col2, _ = st.columns([0.3, 0.2, 0.2, 0.3])
 with col1:
     classified_chapters_dir = helpers.BASE_PATH/"./output/emotions_scored/"
     classified_chapters = [f for f in classified_chapters_dir.iterdir() if f.is_dir()]
+    classified_chapters.sort(key=lambda x: x.stem.split("_")[0])
     selected_chapter = st.selectbox(
         "Select chapter",
         classified_chapters,
@@ -29,10 +30,13 @@ with col1:
 
 with col2:
     classified_csvs = [f for f in (classified_chapters_dir/selected_chapter).iterdir() if f.is_file()]
+    classified_csvs.sort(key=lambda x: x.stat().st_mtime, reverse=True)
+    most_recent_file = max(classified_csvs, key=lambda x: x.stat().st_mtime)
+    
     selected_file = st.selectbox(
         "Select file",
         classified_csvs,
-        format_func=lambda x: x.name
+        format_func=lambda x: f"⭐ {x.name}" if x == most_recent_file else x.name
     )
 
 _, col_btn, _ = st.columns([0.7, 0.1, 0.2])
