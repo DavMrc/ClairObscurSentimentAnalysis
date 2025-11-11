@@ -1,11 +1,9 @@
-import wave
 import pathlib
 import logging
 import json
-import shutil
 import os
-import contextlib
 import pandas as pd
+from pydub import AudioSegment
 # custom scripts
 import helpers
 
@@ -94,49 +92,46 @@ class Splitter(object):
             logging.info(f"{path.stem} copied as-is")
             df.to_csv(helpers.CSV_PATH/f"3_splits/{path.stem}.csv", index=False, **self.csv_settings)
 
-    def _split_wav(self, path:pathlib.Path):
-        # Convert timestamps to seconds
+    def _split_wav(self, path: pathlib.Path):
+        """
+        Split a WAV file into MP3 chunks based on timestamps in self.split_rules.
+        Uses only pydub (no ffmpeg needed for WAV input).
+        """
+        # Collect timestamps for this source
         timestamps = []
         for split_rule in self.split_rules:
             if split_rule["source"] == path.stem:
                 timestamps = [self.__time_to_seconds(t) for t in split_rule["timestamps"]]
 
+        # Destination folder
+        out_dir = path.parent.parent / "3_splits"
         if timestamps:
-            with contextlib.closing(wave.open(path.as_posix(), 'rb')) as wav:
-                frame_rate = wav.getframerate()
-                n_channels = wav.getnchannels()
-                sampwidth = wav.getsampwidth()
-                n_frames = wav.getnframes()
-                total_duration = n_frames / frame_rate
+            # Load WAV file using pure Python (no ffmpeg)
+            audio = AudioSegment.from_wav(path.as_posix())
 
-                # Add start and end points
-                split_points = [0] + timestamps + [total_duration]
+            # Convert timestamps to milliseconds
+            split_points = [0] + [t * 1000 for t in timestamps] + [len(audio)]
 
-                for i in range(len(split_points) - 1):
-                    start_sec = split_points[i]
-                    end_sec = split_points[i + 1]
+            for i in range(len(split_points) - 1):
+                start_ms = split_points[i]
+                end_ms = split_points[i + 1]
 
-                    start_frame = int(start_sec * frame_rate)
-                    end_frame = int(end_sec * frame_rate)
+                part = audio[start_ms:end_ms]
+                out_name = out_dir / f"{path.stem}_{i}.mp3"
 
-                    wav.setpos(start_frame)
-                    frames = wav.readframes(end_frame - start_frame)
+                # Export each split as MP3
+                part.export(out_name.as_posix(), format="mp3")
 
-                    out_name = f"{path.parent.parent}/3_splits/{path.stem}_{i}.wav"
-                    with wave.open(out_name, 'wb') as out:
-                        out.setnchannels(n_channels)
-                        out.setsampwidth(sampwidth)
-                        out.setframerate(frame_rate)
-                        out.writeframes(frames)
+                start_timestamp = self.__seconds_to_time(start_ms / 1000)
+                end_timestamp = self.__seconds_to_time(end_ms / 1000)
+                logging.info(f"Wrote audio split {path.stem}_{i}: {start_timestamp}s → {end_timestamp}s")
 
-                    start_timestamp = self.__seconds_to_time(start_sec)
-                    end_timestamp = self.__seconds_to_time(end_sec)
-                    logging.info(f"Wrote audio split {path.stem}_{i}: {start_timestamp}s → {end_timestamp}s")
         else:
-            cur_path = path.as_posix()
-            dest_path = path.parent.parent/"3_splits"/path.name
-            shutil.copy(cur_path, dest_path)
-            logging.info(f"{path.name} copied as-is")
+            # No split rule → copy file as-is (still convert to MP3)
+            audio = AudioSegment.from_wav(path.as_posix())
+            out_path = out_dir / f"{path.stem}.mp3"
+            audio.export(out_path.as_posix(), format="mp3")
+            logging.info(f"{path.name} copied as-is (converted to MP3)")
 
     def __time_to_seconds(self, t:str):
         """Convert 'MM:SS' or 'HH:MM:SS' string to seconds"""
