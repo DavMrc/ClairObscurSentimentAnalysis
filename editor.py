@@ -7,10 +7,6 @@ import pandas as pd
 from argparse import Namespace
 
 
-BASE_PATH = pathlib.Path(__file__).parent/"data"
-CSV_PATH = BASE_PATH/"csv"
-
-
 class Editor(object):
     def __init__(self, cmd_line_args: Namespace, csv_settings: dict):
         self.cmd_line_args: Namespace = cmd_line_args
@@ -19,15 +15,15 @@ class Editor(object):
         self.delete_existing_csvs()
 
     def delete_existing_csvs(self):
-        for f in (CSV_PATH/"2_edits").iterdir():
+        for f in (helpers.CSV_PATH/"2_edits").iterdir():
             if f.is_file() and ".csv" in f.name:
                 os.remove(f.as_posix())
 
     def main(self):
-        edit_rules = json.load(open(CSV_PATH/"0_rules/rules.json", "r"))
+        edit_rules = json.load(open(helpers.CSV_PATH/"0_rules/rules.json", "r"))
 
         logging.info("Beginning custom edits")
-        for chapter_csv in (CSV_PATH/"1_raw").iterdir():
+        for chapter_csv in (helpers.CSV_PATH/"1_raw").iterdir():
             fname = chapter_csv.stem
             logging.info(fname)
             df = pd.read_csv(chapter_csv.as_posix(), **self.csv_settings)
@@ -49,7 +45,7 @@ class Editor(object):
                 logging.info(f"Prefixing gibberish lines in {fname}")
                 df = self._prefix_gibberish(df)
 
-            df.to_csv(CSV_PATH/f"2_edits/{fname}.csv", index=False, **self.csv_settings)
+            df.to_csv(helpers.CSV_PATH/f"2_edits/{fname}.csv", index=False, **self.csv_settings)
             logging.info("---")
         
         # Handle custom inserts
@@ -61,11 +57,11 @@ class Editor(object):
             fname = i+".csv"
             logging.info(f"Copying file {fname}")
 
-            in_path = (CSV_PATH/"2_edits/custom_inserts"/fname).as_posix()
+            in_path = (helpers.CSV_PATH/"2_edits/custom_inserts"/fname).as_posix()
             in_file = open(in_path, "r", encoding="utf-8", newline="")
             reader = csv.reader(in_file, **self.csv_settings)
 
-            out_path = (CSV_PATH/"2_edits"/fname).as_posix()
+            out_path = (helpers.CSV_PATH/"2_edits"/fname).as_posix()
             out_file = open(out_path, "w", encoding="utf-8", newline="")
             writer = csv.writer(out_file, **self.csv_settings)
 

@@ -6,35 +6,32 @@ import shutil
 import os
 import contextlib
 import pandas as pd
-
-
-BASE_PATH = pathlib.Path(__file__).parent/"data"
-CSV_PATH = BASE_PATH/"csv"
-AUDIO_PATH = BASE_PATH/"audio"
+# custom scripts
+import helpers
 
 
 class Splitter(object):
-    def __init__(self, csv_settings: dict):
-        self.split_rules = json.load(open(CSV_PATH/"0_rules/splits.json", "r"))
-        self.csv_settings = csv_settings
+    def __init__(self):
+        self.split_rules = json.load(open(helpers.CSV_PATH/"0_rules/splits.json", "r"))
+        self.csv_settings = helpers.CSV_SETTINGS
 
         self.delete_existing_files()
 
     def delete_existing_files(self):
         logging.info("Deleting existing csv splits")
         
-        for f in (CSV_PATH/"3_splits").iterdir():
+        for f in (helpers.CSV_PATH/"3_splits").iterdir():
             if f.is_file():
                 os.remove(f.as_posix())
         
-        logging.info("Deleting existin wav splits")
-        for f in (AUDIO_PATH/"splits").iterdir():
+        logging.info("Deleting existing wav splits")
+        for f in (helpers.AUDIO_PATH/"3_splits").iterdir():
             if f.is_file():
                 os.remove(f.as_posix())
 
-    def main(self):
-        csvs = [f for f in (CSV_PATH/"2_edits").iterdir() if f.is_file()]
-        wavs = [f for f in (AUDIO_PATH/"exported").iterdir() if f.is_file()]
+    def _csv_wav_edit_pairs(self) -> list[dict]:
+        csvs = [f for f in (helpers.CSV_PATH/"2_edits").iterdir() if f.is_file()]
+        wavs = [f for f in (helpers.AUDIO_PATH/"2_edits").iterdir() if f.is_file()]
 
         # Link each wav to its matching csv
         pairs = []
@@ -46,15 +43,20 @@ class Splitter(object):
                         "wav": wav
                     })
 
+        return pairs
+
+    def main(self):
+        # Link each wav to its matching csv
+        pairs = self._csv_wav_edit_pairs()
         for pair in pairs:
-            logging.info(f"Splitting csv for {pair['csv'].name}")
-            self._split_csv(pair['csv'])
-            logging.info(f"Splitting audio for {pair['wav'].name}")
-            self._split_wav(pair['wav'])
+            logging.info(f"Splitting csv for {pair['csv'].stem}")
+            self._split_csv(pair["csv"])
+            logging.info(f"Splitting audio for {pair['wav'].stem}")
+            self._split_wav(pair["wav"])
             logging.info("---")
 
     def _split_csv(self, path:pathlib.Path):
-        df = pd.read_csv(path, **self.csv_settings)
+        df = pd.read_csv(path.as_posix(), **self.csv_settings)
         file_has_split_rules = False
         splits = []
         for split_rule in self.split_rules:
@@ -86,11 +88,11 @@ class Splitter(object):
                 slices.append(df[mask].copy())
 
             for i, slice in enumerate(slices):
-                slice.to_csv(CSV_PATH/f"3_splits/{path.stem}_{i}.csv", index=False, **self.csv_settings)
+                slice.to_csv(helpers.CSV_PATH/f"3_splits/{path.stem}_{i}.csv", index=False, **self.csv_settings)
 
         else:
-            logging.info(f"{path.name} copied as-is")
-            df.to_csv(CSV_PATH/f"3_splits/{path.stem}.csv", index=False, **self.csv_settings)
+            logging.info(f"{path.stem} copied as-is")
+            df.to_csv(helpers.CSV_PATH/f"3_splits/{path.stem}.csv", index=False, **self.csv_settings)
 
     def _split_wav(self, path:pathlib.Path):
         # Convert timestamps to seconds
@@ -120,7 +122,7 @@ class Splitter(object):
                     wav.setpos(start_frame)
                     frames = wav.readframes(end_frame - start_frame)
 
-                    out_name = f"{path.parent.parent}/splits/{path.stem}_{i}.wav"
+                    out_name = f"{path.parent.parent}/3_splits/{path.stem}_{i}.wav"
                     with wave.open(out_name, 'wb') as out:
                         out.setnchannels(n_channels)
                         out.setsampwidth(sampwidth)
@@ -132,7 +134,7 @@ class Splitter(object):
                     logging.info(f"Wrote audio split {path.stem}_{i}: {start_timestamp}s → {end_timestamp}s")
         else:
             cur_path = path.as_posix()
-            dest_path = path.parent.parent/"splits"/path.name
+            dest_path = path.parent.parent/"3_splits"/path.name
             shutil.copy(cur_path, dest_path)
             logging.info(f"{path.name} copied as-is")
 

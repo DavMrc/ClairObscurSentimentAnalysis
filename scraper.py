@@ -8,10 +8,6 @@ import csv
 import bs4
 
 
-BASE_PATH = pathlib.Path(__file__).parent/"data"
-CSV_PATH = BASE_PATH/"csv"
-
-
 class Scraper(object):
     def __init__(self, parser: str, csv_settings: dict):
         self.parser = parser
@@ -129,7 +125,7 @@ class Scraper(object):
         
         chapter = self.__file_name_safe(chapter)
         outfile = open(
-            CSV_PATH/f"1_raw/{self._page_scraped_ix}_{chapter}.csv",
+            helpers.CSV_PATH/f"1_raw/{self._page_scraped_ix}_{chapter}.csv",
             "w",
             encoding="utf-8",
             newline=""
