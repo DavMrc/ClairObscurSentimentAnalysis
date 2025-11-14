@@ -6,9 +6,170 @@ import logging
 import pathlib
 import base64
 import typing
+import curses
 import pandas as pd
+from typing import Dict, List, Set, Optional
+from pprint import pprint
 # custom imports
 import helpers
+
+
+class ChapterSelectionUI:
+    def __init__(self, data: Dict[str, List[str]]) -> None:
+        self.data: Dict[str, List[str]] = data
+        self.chapters: List[str] = list(data.keys())
+        self.selections: Dict[str, Set[str]] = {ch: set() for ch in self.chapters}
+        self.idx: int = 0
+
+    # Utility
+    @staticmethod
+    def wrap_index(idx: int, total: int) -> int:
+        return idx % total
+
+    # Subchapter selection screen (scrollable)
+    def select_subchapters(
+        self,
+        stdscr: curses.window,
+        chapter: str,
+        selected: Set[str],
+        choices: List[str]
+    ) -> Set[str]:
+        idx: int = 0
+        n: int = len(choices)
+        max_lines: int = curses.LINES - 5  # reserve lines for header
+        offset: int = 0
+
+        while True:
+            stdscr.clear()
+            stdscr.addstr(0, 0, "Arrow keys: navigate | s: toggle | a: all | d: none | q: back"[:curses.COLS-1])
+            stdscr.addstr(1, 0, f"Chapter: {chapter}"[:curses.COLS-1])
+            stdscr.addstr(2, 0, "-" * (curses.COLS-1))
+
+            # adjust scroll offset
+            if idx < offset:
+                offset = idx
+            elif idx >= offset + max_lines:
+                offset = idx - max_lines + 1
+
+            visible_choices = choices[offset:offset + max_lines]
+            for display_idx, item in enumerate(visible_choices):
+                mark: str = "[x]" if item in selected else "[ ]"
+                hl: str = ">" if display_idx + offset == idx else " "
+                stdscr.addstr(4 + display_idx, 0, f"{hl} {mark} {item}"[:curses.COLS-1])
+
+            key: int = stdscr.getch()
+            if key == curses.KEY_UP:
+                idx = self.wrap_index(idx - 1, n)
+            elif key == curses.KEY_DOWN:
+                idx = self.wrap_index(idx + 1, n)
+            elif key == ord('s'):
+                item: str = choices[idx]
+                if item in selected:
+                    selected.remove(item)
+                else:
+                    selected.add(item)
+            elif key == ord('a'):
+                selected.clear()
+                selected.update(choices)
+            elif key == ord('d'):
+                selected.clear()
+            elif key == ord('q'):
+                return selected
+
+    # Confirmation screen
+    def confirm_screen(self, stdscr: curses.window) -> bool:
+        while True:
+            stdscr.clear()
+            stdscr.addstr(0, 0, "Enter: confirm | q: back"[:curses.COLS-1])
+            stdscr.addstr(1, 0, "Selected items:"[:curses.COLS-1])
+
+            max_lines: int = curses.LINES - 3
+            visible_items = list(self.selections.items())[:max_lines]
+
+            line: int = 3
+            for chap, items in visible_items:
+                stdscr.addstr(line, 0, f"- {chap}: {list(items) if items else 'NONE'}"[:curses.COLS-1])
+                line += 1
+
+            key: int = stdscr.getch()
+            if key == ord('q'):
+                return False
+            if key in (10, 13):
+                return True
+
+    # Main curses loop (scrollable)
+    def run_curses(self, stdscr: curses.window) -> Optional[Dict[str, List[str]]]:
+        curses.curs_set(0)
+        offset: int = 0
+        max_lines: int = curses.LINES - 3
+
+        while True:
+            stdscr.clear()
+            stdscr.addstr(0, 0, "Arrow keys: move | S select/open | A all (current) | D none (current) | T all (global) | R none (global) | Enter: confirm | q: quit"[:curses.COLS-1])
+
+            # aDjust scroll offset
+            if self.idx < offset:
+                offset = self.idx
+            elif self.idx >= offset + max_lines:
+                offset = self.idx - max_lines + 1
+
+            visible_chapters = self.chapters[offset:offset + max_lines]
+            for display_idx, chap in enumerate(visible_chapters):
+                total: int = len(self.data[chap])
+                if total == 1:
+                    mark: str = "[x]" if self.selections[chap] else "[ ]"
+                else:
+                    mark = f"({len(self.selections[chap])}/{total})"
+                hl: str = ">" if display_idx + offset == self.idx else " "
+                stdscr.addstr(2 + display_idx, 0, f"{hl} {mark} {chap}"[:curses.COLS-1])
+
+            key: int = stdscr.getch()
+            if key == curses.KEY_UP:
+                self.idx = self.wrap_index(self.idx - 1, len(self.chapters))
+            elif key == curses.KEY_DOWN:
+                self.idx = self.wrap_index(self.idx + 1, len(self.chapters))
+            elif key == ord('s'):
+                # Perform single selection
+                chapter: str = self.chapters[self.idx]
+                items: List[str] = self.data[chapter]
+                if len(items) == 1:
+                    if items[0] in self.selections[chapter]:
+                        self.selections[chapter].clear()
+                    else:
+                        self.selections[chapter].add(items[0])
+                else:
+                    self.selections[chapter] = self.select_subchapters(
+                        stdscr, chapter, self.selections[chapter], items
+                    )
+            elif key == ord('a'):
+                # Select all subchapters
+                ch: str = self.chapters[self.idx]
+                self.selections[ch] = set(self.data[ch])
+            elif key == ord('d'):
+                # Deselect all subchapters
+                ch: str = self.chapters[self.idx]
+                self.selections[ch].clear()
+            elif key in (10, 13):
+                # Enter > Confirm selections window
+                confirmed: bool = self.confirm_screen(stdscr)
+                if confirmed:
+                    curses.endwin()
+                    return {k: list(v) for k, v in self.selections.items() if v}
+            elif key == ord('t'):
+                # Select all chapters and all their subchapters
+                for ch, items in self.data.items():
+                    self.selections[ch] = set(items)
+            elif key == ord('r'):
+                # Deselect all chapters
+                for ch in self.chapters:
+                    self.selections[ch].clear()
+            elif key == ord('q'):
+                # Quit without saving
+                return None
+
+    # Run the UI
+    def main(self) -> Optional[Dict[str, List[str]]]:
+        return curses.wrapper(self.run_curses)
 
 
 class Chapter:
@@ -47,6 +208,11 @@ class Pair:
     def keep_only_splits(self, indices: list[int]):
         self.mp3.splits = self.mp3.keep_splits(indices)
         self.csv.splits = self.csv.keep_splits(indices)
+
+    def to_aux_dict(self) -> dict:
+        return {
+            self.chapter: [i for i in range(len(self.csv.splits))]
+        }
 
     def __iter__(self):
         return zip(range(len(self.csv.splits)), iter(self.csv.splits), iter(self.mp3.splits))
@@ -335,11 +501,28 @@ class Classifier(object):
 if __name__ == "__main__":
     classifier = Classifier()
     classifier.authorize()
-    # Test run
-    classifier.set_chapters(["0_The_Gommage", "1_Festival_de_lExpedition"])
 
-    # classifier.set_chapters({
-    #     "11_Monocos_Station": [0],
-    #     "16_The_Monolith": [0,2]
-    # })
-    classifier.main()
+    # Get a dictionary of all chapters and sub-chapters
+    # in the form of {"chapter": [0,1,2]}
+    d = {}
+    for p in classifier.csv_mp3_split_pairs():
+        d.update(p.to_aux_dict())
+
+    order_fn = lambda x: int(x[0].split("_")[0])
+    d = dict(sorted(d.items(), key=order_fn))
+
+    curses_ui = ChapterSelectionUI(data=d)
+    selected_chapters = curses_ui.main()
+    if selected_chapters:
+        selected_chapters = dict(sorted(selected_chapters.items(), key=order_fn))
+
+        print("Selected chapters and splits:")
+        pprint(selected_chapters)
+        print()
+
+        y_n = input("Proceed with classification? (y): ")
+        if y_n.lower() == "y":
+            classifier.set_chapters(selected_chapters)
+            classifier.main()
+        else:
+            print("Exiting...")
