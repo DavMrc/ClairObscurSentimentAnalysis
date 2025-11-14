@@ -132,13 +132,13 @@ def plotly_barchart(df: pd.DataFrame, title:str=None):
         title=title,
         height=500
     )
-    # Enable horizontal scrolling (range slider)
+
     fig.update_layout(
         xaxis= {
-            "rangeslider": {"visible": True},
             "type": "category",
-            "range": [-0.5, 30],
-            "tickangle": -90
+            "tickangle": -90,
+            # "range": [-0.5, 30],
+            # "rangeslider": {"visible": True},
         },
         height=500
     )
@@ -154,6 +154,30 @@ def audio_player(path):
         except:
             pass
 
+def filters(df):
+    _, col, _ = st.columns([4, 2, 4])
+    # Dialogues filter
+    with col:
+        dialogues = df["dialogue_index"].to_list()
+
+        min_slider = 0
+        max_slider = max(dialogues)
+        if min_slider == max_slider:
+            attrs = {"disabled": True}
+        else:
+            attrs = {"min_value": 0, "max_value": max(dialogues)}
+        dialogue_filtered = st.slider(
+            "Dialogue Index",
+            value=(0, dialogues[len(dialogues)//2 + 1]),
+            **attrs
+        )
+        min_ = dialogue_filtered[0]
+        max_ = dialogue_filtered[1]
+    
+    mask = (df["dialogue_index"] >= min_) & (df["dialogue_index"] <= max_)
+    
+    return mask
+
 
 if load_data_btn or st.session_state["load"]:
     st.session_state["load"] = True
@@ -163,10 +187,13 @@ if load_data_btn or st.session_state["load"]:
             # Audio player
             audio_player(selection_audio_path)
 
+            df = load_dataframe(selection_csv_path)
+            filters_mask = filters(df)
+            df = df[filters_mask]
+
             col1, col2 = st.columns(2)
             with col1:
                 # Chart
-                df = load_dataframe(selection_csv_path)
                 fig = plotly_barchart(df)
                 st.plotly_chart(fig, use_container_width=True)
 
@@ -182,17 +209,27 @@ if load_data_btn or st.session_state["load"]:
             # Audio player
             audio_player(selection_audio_path)
 
+            selection_df = load_dataframe(selection_csv_path)
+
+            # Filters
+            filters_mask = filters(selection_df)
+            selection_df = selection_df[filters_mask]
+
             col1, col2 = st.columns(2)
             with col1:
-                for m, path in zip(["Selection", "Comparison"], [selection_csv_path, comparison_csv_path]):
-                    # Chart
-                    df = load_dataframe(path)
-                    fig = plotly_barchart(df, title=m)
-                    st.plotly_chart(fig, use_container_width=True, key=f"{m}_chart")
+                # Selection chart
+                selection_fig = plotly_barchart(selection_df, title="Selection")
+                st.plotly_chart(selection_fig, use_container_width=True, key="selection_chart")
+
+                # Comparison chart
+                comparison_df = load_dataframe(comparison_csv_path)
+                comparison_df = comparison_df[filters_mask]
+                comparison_fig = plotly_barchart(comparison_df, title="Comparison")
+                st.plotly_chart(comparison_fig, use_container_width=True, key="comparison_chart")
 
             # Dialogues table
             with col2:
                 st.write("### Dialogues")
                 show_columns = ["id", "speaker", "line"]
-                subs_df = df[show_columns]
-                st.dataframe(subs_df, hide_index=True, key=f"{m}_table", height=700)
+                subs_df = selection_df[show_columns]
+                st.dataframe(subs_df, hide_index=True, key="table", height=700)
