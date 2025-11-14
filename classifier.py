@@ -80,7 +80,7 @@ class Classifier(object):
         # Prompt
         self.system_message = f"""
         ## TASK
-        Evaluate the likelihood of the emotions in the dialogue.
+        Evaluate the likelihood of the emotions in the audio dialogue.
         Consider the actor's interpretation, the background music and the meaning of the words.
         Only classify the following emotions:
         - positive: [{', '.join(self._positive_emotions)}]
@@ -89,6 +89,8 @@ class Classifier(object):
 
         ## REQUIREMENTS
         - You will have the transcript of the dialogue. Use the row index as key when returning the estimate for the voice line.
+        - Your analysis must rely EXCLUSIVELY on the audio. The transcript is provided ONLY to map voice lines by their row index.
+        - Do NOT use the text to infer tone, emotion, or meaning.
         - Make sure to not classify any other emotion apart from those listed.
         - Don't mix positive and negative emotions in a single voice line.
         - Your estimate should be between 0 and 1, and the total should add up to 1.
@@ -259,7 +261,6 @@ class Classifier(object):
         response = self.__openai_client.chat.completions.create(
             model="gpt-audio",
             temperature=0.1,
-            modalities=["text"],
             max_completion_tokens=16384,
             messages=[
                 {
@@ -270,15 +271,15 @@ class Classifier(object):
                     "role": "user",
                     "content": [
                         {
-                            "type": "text",
-                            "text": dialogues_text
-                        },
-                        {
                             "type": "input_audio",
                             "input_audio": {
                                 "data": audio_b64,
                                 "format": "mp3"
                             }
+                        },
+                        {
+                            "type": "text",
+                            "text": "TRANSCRIPT (DO NOT USE FOR CLASSIFICATION):\n" + dialogues_text
                         }
                     ]
                 }
@@ -335,7 +336,7 @@ if __name__ == "__main__":
     classifier = Classifier()
     classifier.authorize()
     # Test run
-    classifier.set_chapters(["11_Monocos_Station"])
+    classifier.set_chapters(["0_The_Gommage", "1_Festival_de_lExpedition"])
 
     # classifier.set_chapters({
     #     "11_Monocos_Station": [0],
