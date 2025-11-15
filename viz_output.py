@@ -58,7 +58,7 @@ columns = st.columns(col_no)
 with columns[0]:
     classified_chapters_dir = helpers.BASE_PATH/"./output/emotions_scored/"
     classified_chapters = [f for f in classified_chapters_dir.iterdir() if f.is_dir()]
-    classified_chapters.sort(key=lambda x: x.stem.split("_")[0])
+    classified_chapters.sort(key=lambda x: int(x.stem.split("_")[0]))
     selected_chapter = st.selectbox(
         "Select chapter",
         classified_chapters,
