@@ -32,8 +32,20 @@ for item in emotions_scored_dir.iterdir():
 
 full_df = pd.concat(dfs)
 full_df.sort_values(["chapter_index", "dialogue_index", "line_index"], inplace=True)
-logging.info("Concatenated all files into one:\n")
+logging.info("Concatenated all files into one.")
 
+logging.info("Adding 'Act Number' column")
+def determine_act(chapter_index):
+    if 0 <= chapter_index <= 8:
+        return 1
+    elif 9 <= chapter_index <= 16:
+        return 2
+    else:
+        return 3
+
+full_df.insert(0, "Act Number", full_df["chapter_index"].apply(determine_act))
+
+logging.info("Summary:\n")
 buffer = io.StringIO()
 full_df.info(buf=buffer)
 info_str = buffer.getvalue()
