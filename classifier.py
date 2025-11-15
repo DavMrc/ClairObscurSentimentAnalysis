@@ -105,7 +105,8 @@ class ChapterSelectionUI:
 
         while True:
             stdscr.clear()
-            stdscr.addstr(0, 0, "Arrow keys: move | S select/open | A all (current) | D none (current) | T all (global) | R none (global) | Enter: confirm | q: quit"[:curses.COLS-1])
+            stdscr.addstr(0, 0, "Arrow keys: move | S: select/open | A: all (current) | D: none (current) | T: all (global) | R: none (global) | Enter: confirm | q: quit"[:curses.COLS-1])
+            stdscr.addstr(1, 0, "(selected/total) | [C] = already classified")
 
             # aDjust scroll offset
             if self.idx < offset:
@@ -120,8 +121,13 @@ class ChapterSelectionUI:
                     mark: str = "[x]" if self.selections[chap] else "[ ]"
                 else:
                     mark = f"({len(self.selections[chap])}/{total})"
+                
+                # Check if there are existing files in the output folder
+                output_folder = helpers.BASE_PATH/f"output/emotions_scored/{chap}/"
+                completed_prefix = "[C]" if output_folder.exists() and any(list(output_folder.iterdir())) else "[ ]"
+
                 hl: str = ">" if display_idx + offset == self.idx else " "
-                stdscr.addstr(2 + display_idx, 0, f"{hl} {mark} {chap}"[:curses.COLS-1])
+                stdscr.addstr(3 + display_idx, 0, f"{hl} {mark}\t{completed_prefix}\t{chap}"[:curses.COLS-1])
 
             key: int = stdscr.getch()
             if key == curses.KEY_UP:
