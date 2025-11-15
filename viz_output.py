@@ -6,7 +6,11 @@ import plotly.express as px
 import helpers
 
 
-st.set_page_config(layout="wide")
+st.title("Emotion Classification Inspector")
+st.set_page_config(
+    page_title="Emotion Classification Inspector",
+    layout="wide"
+)
 COLOR_MAP = {
     "neutral": "#818181",
     "anger": "#dd0b27",
