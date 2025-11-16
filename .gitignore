@@ -1,8 +1,14 @@
-data/
-venv/
-tests/
-
 .vscode/
-
 __pycache__/
 *.pyc
+
+# Python virtual environment
+venv/
+
+tests/
+
+# Files directely under data/
+data/*.*
+
+# Files directely under data/audio/
+data/audio/*.*
