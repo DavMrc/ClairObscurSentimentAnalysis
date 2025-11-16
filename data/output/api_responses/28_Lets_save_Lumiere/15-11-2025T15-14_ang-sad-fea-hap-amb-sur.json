@@ -1,0 +1,116 @@
+[
+  {
+    "id": "chatcmpl-CcBK7FlLQAfjls1RSDt5uM9id0kgp",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"0_0\": {\"happiness\": 0.0, \"ambitious\": 0.0, \"surprise\": 0.0, \"anger\": 0.0, \"sadness\": 0.6, \"fear\": 0.4, \"neutral\": 0.0},\n  \"3_1\": {\"happiness\": 0.0, \"ambitious\": 0.0, \"surprise\": 0.0, \"anger\": 0.0, \"sadness\": 0.0, \"fear\": 0.5, \"neutral\": 0.5},\n  \"3_2\": {\"happiness\": 0.0, \"ambitious\": 0.0, \"surprise\": 0.0, \"anger\": 0.0, \"sadness\": 0.4, \"fear\": 0.4, \"neutral\": 0.2},\n  \"3_3\": {\"happiness\": 0.0, \"ambitious\": 0.0, \"surprise\": 0.0, \"anger\": 0.0, \"sadness\": 0.5, \"fear\": 0.3, \"neutral\": 0.2},\n  \"7_2\": {\"happiness\": 0.0, \"ambitious\": 0.6, \"surprise\": 0.0, \"anger\": 0.0, \"sadness\": 0.0, \"fear\": 0.0, \"neutral\": 0.4},\n  \"7_3\": {\"happiness\": 0.0, \"ambitious\": 0.7, \"surprise\": 0.0, \"anger\": 0.0, \"sadness\": 0.0, \"fear\": 0.0, \"neutral\": 0.3},\n  \"7_4\": {\"happiness\": 0.0, \"ambitious\": 0.5, \"surprise\": 0.0, \"anger\": 0.0, \"sadness\": 0.0, \"fear\": 0.3, \"neutral\": 0.2},\n  \"7_5\": {\"happiness\": 0.0, \"ambitious\": 0.0, \"surprise\": 0.0, \"anger\": 0.0, \"sadness\": 0.3, \"fear\": 0.4, \"neutral\": 0.3},\n  \"7_6\": {\"happiness\": 0.0, \"ambitious\": 0.5, \"surprise\": 0.0, \"anger\": 0.0, \"sadness\": 0.0, \"fear\": 0.3, \"neutral\": 0.2},\n  \"8_0\": {\"happiness\": 0.0, \"ambitious\": 0.0, \"surprise\": 0.0, \"anger\": 0.0, \"sadness\": 0.7, \"fear\": 0.3, \"neutral\": 0.0},\n  \"8_1\": {\"happiness\": 0.0, \"ambitious\": 0.0, \"surprise\": 0.0, \"anger\": 0.0, \"sadness\": 0.6, \"fear\": 0.2, \"neutral\": 0.2},\n  \"8_2\": {\"happiness\": 0.0, \"ambitious\": 0.0, \"surprise\": 0.0, \"anger\": 0.3, \"sadness\": 0.5, \"fear\": 0.2, \"neutral\": 0.0},\n  \"8_3\": {\"happiness\": 0.0, \"ambitious\": 0.0, \"surprise\": 0.0, \"anger\": 0.0, \"sadness\": 0.6, \"fear\": 0.2, \"neutral\": 0.2},\n  \"8_4\": {\"happiness\": 0.0, \"ambitious\": 0.0, \"surprise\": 0.0, \"anger\": 0.5, \"sadness\": 0.4, \"fear\": 0.1, \"neutral\": 0.0},\n  \"8_5\": {\"happiness\": 0.0, \"ambitious\": 0.0, \"surprise\": 0.0, \"anger\": 0.3, \"sadness\": 0.5, \"fear\": 0.2, \"neutral\": 0.0},\n  \"8_6\": {\"happiness\": 0.0, \"ambitious\": 0.0, \"surprise\": 0.0, \"anger\": 0.4, \"sadness\": 0.5, \"fear\": 0.1, \"neutral\": 0.0},\n  \"8_7\": {\"happiness\": 0.0, \"ambitious\": 0.0, \"surprise\": 0.0, \"anger\": 0.3, \"sadness\": 0.5, \"fear\": 0.2, \"neutral\": 0.0},\n  \"8_8\": {\"happiness\": 0.0, \"ambitious\": 0.0, \"surprise\": 0.0, \"anger\": 0.0, \"sadness\": 0.7, \"fear\": 0.2, \"neutral\": 0.1},\n  \"8_9\": {\"happiness\": 0.0, \"ambitious\": 0.0, \"surprise\": 0.0, \"anger\": 0.0, \"sadness\": 0.7, \"fear\": 0.2, \"neutral\": 0.1},\n  \"8_10\": {\"happiness\": 0.0, \"ambitious\": 0.0, \"surprise\": 0.0, \"anger\": 0.0, \"sadness\": 0.7, \"fear\": 0.2, \"neutral\": 0.1},\n  \"8_11\": {\"happiness\": 0.0, \"ambitious\": 0.0, \"surprise\": 0.0, \"anger\": 0.0, \"sadness\": 0.6, \"fear\": 0.2, \"neutral\": 0.2},\n  \"8_12\": {\"happiness\": 0.0, \"ambitious\": 0.0, \"surprise\": 0.0, \"anger\": 0.2, \"sadness\": 0.7, \"fear\": 0.1, \"neutral\": 0.0},\n  \"8_13\": {\"happiness\": 0.0, \"ambitious\": 0.0, \"surprise\": 0.0, \"anger\": 0.3, \"sadness\": 0.5, \"fear\": 0.2, \"neutral\": 0.0},\n  \"8_14\": {\"happiness\": 0.0, \"ambitious\": 0.0, \"surprise\": 0.0, \"anger\": 0.5, \"sadness\": 0.4, \"fear\": 0.1, \"neutral\": 0.0},\n  \"8_15\": {\"happiness\": 0.0, \"ambitious\": 0.0, \"surprise\": 0.0, \"anger\": 0.6, \"sadness\": 0.3, \"fear\": 0.1, \"neutral\": 0.0}\n}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": []
+        }
+      }
+    ],
+    "created": 1763216027,
+    "model": "gpt-audio-2025-08-28",
+    "object": "chat.completion",
+    "service_tier": "default",
+    "system_fingerprint": "fp_eda65ddc6d",
+    "usage": {
+      "completion_tokens": 1652,
+      "prompt_tokens": 3439,
+      "total_tokens": 5091,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0,
+        "text_tokens": 1652
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 2540,
+        "cached_tokens": 0,
+        "text_tokens": 899,
+        "image_tokens": 0
+      }
+    }
+  },
+  {
+    "id": "chatcmpl-CcBKczOdQ8od078EQQJivx92uAe11",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"9_1\": {\n    \"happiness\": 0.0,\n    \"ambitious\": 0.7,\n    \"surprise\": 0.0,\n    \"anger\": 0.3,\n    \"sadness\": 0.0,\n    \"fear\": 0.0,\n    \"neutral\": 0.0\n  },\n  \"9_2\": {\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"surprise\": 0.0,\n    \"anger\": 0.6,\n    \"sadness\": 0.0,\n    \"fear\": 0.4,\n    \"neutral\": 0.0\n  },\n  \"9_3\": {\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"surprise\": 0.0,\n    \"anger\": 0.0,\n    \"sadness\": 0.0,\n    \"fear\": 0.0,\n    \"neutral\": 1.0\n  },\n  \"9_4\": {\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"surprise\": 0.8,\n    \"anger\": 0.0,\n    \"sadness\": 0.0,\n    \"fear\": 0.2,\n    \"neutral\": 0.0\n  },\n  \"9_5\": {\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"surprise\": 0.0,\n    \"anger\": 0.0,\n    \"sadness\": 0.0,\n    \"fear\": 0.9,\n    \"neutral\": 0.1\n  },\n  \"9_6\": {\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"surprise\": 0.7,\n    \"anger\": 0.0,\n    \"sadness\": 0.3,\n    \"fear\": 0.0,\n    \"neutral\": 0.0\n  },\n  \"9_7\": {\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"surprise\": 0.0,\n    \"anger\": 0.5,\n    \"sadness\": 0.3,\n    \"fear\": 0.2,\n    \"neutral\": 0.0\n  },\n  \"10_0\": {\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"surprise\": 0.0,\n    \"anger\": 0.0,\n    \"sadness\": 0.7,\n    \"fear\": 0.3,\n    \"neutral\": 0.0\n  },\n  \"10_1\": {\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"surprise\": 0.0,\n    \"anger\": 0.0,\n    \"sadness\": 0.2,\n    \"fear\": 0.0,\n    \"neutral\": 0.8\n  },\n  \"10_2\": {\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"surprise\": 0.0,\n    \"anger\": 0.6,\n    \"sadness\": 0.3,\n    \"fear\": 0.1,\n    \"neutral\": 0.0\n  },\n  \"10_3\": {\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"surprise\": 0.0,\n    \"anger\": 0.4,\n    \"sadness\": 0.5,\n    \"fear\": 0.1,\n    \"neutral\": 0.0\n  },\n  \"10_4\": {\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"surprise\": 0.0,\n    \"anger\": 0.0,\n    \"sadness\": 0.8,\n    \"fear\": 0.2,\n    \"neutral\": 0.0\n  },\n  \"10_5\": {\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"surprise\": 0.0,\n    \"anger\": 0.0,\n    \"sadness\": 0.9,\n    \"fear\": 0.1,\n    \"neutral\": 0.0\n  },\n  \"10_6\": {\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"surprise\": 0.0,\n    \"anger\": 0.0,\n    \"sadness\": 1.0,\n    \"fear\": 0.0,\n    \"neutral\": 0.0\n  },\n  \"10_7\": {\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"surprise\": 0.0,\n    \"anger\": 0.0,\n    \"sadness\": 0.9,\n    \"fear\": 0.1,\n    \"neutral\": 0.0\n  },\n  \"10_8\": {\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"surprise\": 0.0,\n    \"anger\": 0.0,\n    \"sadness\": 0.7,\n    \"fear\": 0.3,\n    \"neutral\": 0.0\n  },\n  \"10_9\": {\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"surprise\": 0.0,\n    \"anger\": 0.0,\n    \"sadness\": 0.0,\n    \"fear\": 0.0,\n    \"neutral\": 1.0\n  },\n  \"10_10\": {\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"surprise\": 0.0,\n    \"anger\": 0.0,\n    \"sadness\": 0.8,\n    \"fear\": 0.2,\n    \"neutral\": 0.0\n  },\n  \"10_11\": {\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"surprise\": 0.0,\n    \"anger\": 0.0,\n    \"sadness\": 0.9,\n    \"fear\": 0.1,\n    \"neutral\": 0.0\n  },\n  \"10_12\": {\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"surprise\": 0.0,\n    \"anger\": 0.0,\n    \"sadness\": 0.9,\n    \"fear\": 0.1,\n    \"neutral\": 0.0\n  }\n}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": []
+        }
+      }
+    ],
+    "created": 1763216058,
+    "model": "gpt-audio-2025-08-28",
+    "object": "chat.completion",
+    "service_tier": "default",
+    "system_fingerprint": "fp_eda65ddc6d",
+    "usage": {
+      "completion_tokens": 1522,
+      "prompt_tokens": 4895,
+      "total_tokens": 6417,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0,
+        "text_tokens": 1522
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 3950,
+        "cached_tokens": 0,
+        "text_tokens": 945,
+        "image_tokens": 0
+      }
+    }
+  },
+  {
+    "id": "chatcmpl-CcBKzPLamAMZYSCd95SADiUpkBBIA",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"11_0\": {\n    \"neutral\": 0.7,\n    \"sadness\": 0.3,\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"surprise\": 0.0,\n    \"anger\": 0.0,\n    \"fear\": 0.0\n  },\n  \"11_1\": {\n    \"neutral\": 0.5,\n    \"surprise\": 0.5,\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"anger\": 0.0,\n    \"sadness\": 0.0,\n    \"fear\": 0.0\n  },\n  \"11_2\": {\n    \"neutral\": 1.0,\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"surprise\": 0.0,\n    \"anger\": 0.0,\n    \"sadness\": 0.0,\n    \"fear\": 0.0\n  },\n  \"11_3\": {\n    \"fear\": 0.7,\n    \"neutral\": 0.3,\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"surprise\": 0.0,\n    \"anger\": 0.0,\n    \"sadness\": 0.0\n  },\n  \"11_4\": {\n    \"neutral\": 0.8,\n    \"sadness\": 0.2,\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"surprise\": 0.0,\n    \"anger\": 0.0,\n    \"fear\": 0.0\n  },\n  \"11_5\": {\n    \"surprise\": 0.7,\n    \"neutral\": 0.3,\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"anger\": 0.0,\n    \"sadness\": 0.0,\n    \"fear\": 0.0\n  },\n  \"11_6\": {\n    \"anger\": 0.6,\n    \"neutral\": 0.4,\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"surprise\": 0.0,\n    \"sadness\": 0.0,\n    \"fear\": 0.0\n  },\n  \"11_7\": {\n    \"fear\": 0.6,\n    \"neutral\": 0.4,\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"surprise\": 0.0,\n    \"anger\": 0.0,\n    \"sadness\": 0.0\n  },\n  \"11_8\": {\n    \"sadness\": 0.5,\n    \"neutral\": 0.5,\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"surprise\": 0.0,\n    \"anger\": 0.0,\n    \"fear\": 0.0\n  },\n  \"11_9\": {\n    \"sadness\": 0.7,\n    \"neutral\": 0.3,\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"surprise\": 0.0,\n    \"anger\": 0.0,\n    \"fear\": 0.0\n  },\n  \"11_10\": {\n    \"neutral\": 0.6,\n    \"sadness\": 0.4,\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"surprise\": 0.0,\n    \"anger\": 0.0,\n    \"fear\": 0.0\n  },\n  \"11_11\": {\n    \"sadness\": 0.8,\n    \"anger\": 0.2,\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"surprise\": 0.0,\n    \"neutral\": 0.0,\n    \"fear\": 0.0\n  },\n  \"11_12\": {\n    \"neutral\": 0.7,\n    \"sadness\": 0.3,\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"surprise\": 0.0,\n    \"anger\": 0.0,\n    \"fear\": 0.0\n  },\n  \"11_13\": {\n    \"sadness\": 0.6,\n    \"neutral\": 0.4,\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"surprise\": 0.0,\n    \"anger\": 0.0,\n    \"fear\": 0.0\n  },\n  \"11_14\": {\n    \"neutral\": 0.8,\n    \"sadness\": 0.2,\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"surprise\": 0.0,\n    \"anger\": 0.0,\n    \"fear\": 0.0\n  },\n  \"11_15\": {\n    \"anger\": 0.7,\n    \"sadness\": 0.3,\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"surprise\": 0.0,\n    \"neutral\": 0.0,\n    \"fear\": 0.0\n  },\n  \"11_16\": {\n    \"neutral\": 0.6,\n    \"sadness\": 0.4,\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"surprise\": 0.0,\n    \"anger\": 0.0,\n    \"fear\": 0.0\n  },\n  \"11_17\": {\n    \"sadness\": 0.7,\n    \"neutral\": 0.3,\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"surprise\": 0.0,\n    \"anger\": 0.0,\n    \"fear\": 0.0\n  },\n  \"11_18\": {\n    \"sadness\": 0.8,\n    \"neutral\": 0.2,\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"surprise\": 0.0,\n    \"anger\": 0.0,\n    \"fear\": 0.0\n  }\n}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": []
+        }
+      }
+    ],
+    "created": 1763216081,
+    "model": "gpt-audio-2025-08-28",
+    "object": "chat.completion",
+    "service_tier": "default",
+    "system_fingerprint": "fp_eda65ddc6d",
+    "usage": {
+      "completion_tokens": 1446,
+      "prompt_tokens": 2669,
+      "total_tokens": 4115,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0,
+        "text_tokens": 1446
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 2016,
+        "cached_tokens": 0,
+        "text_tokens": 653,
+        "image_tokens": 0
+      }
+    }
+  }
+]

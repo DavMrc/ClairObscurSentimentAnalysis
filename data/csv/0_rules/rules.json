@@ -1,0 +1,157 @@
+{
+    "inserts": [
+        "29_A_Life_to_Paint",
+        "30_A_Life_to_Love"
+    ],
+    "deletes": [
+        {
+            "source": "0_The_Gommage",
+            "ranges":[
+                {"dial_s": 2, "line_s": 6, "dial_e": 2, "line_e": 6},
+                {"dial_s": 4, "line_s": 3, "dial_e": 4, "line_e": 6},
+                {"dial_s": 7, "line_s": 0, "dial_e": 7, "line_e": 7},
+                {"dial_s": 10, "line_s": 0, "dial_e": 14, "line_e": 0},
+                {"dial_s": 19, "line_s": 0, "dial_e": 19, "line_e": 9},
+                {"dial_s": 23, "line_s": 0, "dial_e": 26, "line_e": 14},
+                {"dial_s": 30, "line_s": 0, "dial_e": 35, "line_e": 0},
+                {"dial_s": 37, "line_s": 0, "dial_e": 39, "line_e": 0}
+            ]
+        },
+        {
+            "source": "1_Festival_de_lExpedition",
+            "ranges": [
+                {"dial_s": 1, "line_s": 18, "dial_e": 1, "line_e": 18},
+                {"dial_s": 2, "line_s": 3, "dial_e": 2, "line_e": 4},
+                {"dial_s": 9, "line_s": 4, "dial_e": 11, "line_e": 0},
+                {"dial_s": 13, "line_s": 6, "dial_e": 13, "line_e": 7},
+                {"dial_s": 24, "line_s": 8, "dial_e": 24, "line_e": 11}
+            ]
+        },
+        {
+            "source": "3_Spring_Meadows",
+            "ranges": [
+                {"dial_s": 2, "line_s": 0, "dial_e": 3, "line_e": 1},
+                {"dial_s": 12, "line_s": 0, "dial_e": 14, "line_e": 0}
+            ]
+        },
+        {
+            "source": "4_Flying_Waters",
+            "ranges": [
+                {"dial_s": 1, "line_s": 0, "dial_e": 1, "line_e": 2},
+                {"dial_s": 11, "line_s": 0, "dial_e": 11, "line_e": 0},
+                {"dial_s": 12, "line_s": 0, "dial_e": 12, "line_e": 2},
+                {"dial_s": 17, "line_s": 0, "dial_e": 21, "line_e": 0}
+            ]
+        },
+        {
+            "source": "5_Ancient_Sanctuary",
+            "ranges": [
+                {"dial_s": 3, "line_s": 0, "dial_e": 3, "line_e": 2}
+            ]
+        },
+        {
+            "source": "6_Gestral_Village",
+            "ranges": [
+                {"dial_s": 0, "line_s": 0, "dial_e": 2, "line_e": 1},
+                {"dial_s": 4, "line_s": 0, "dial_e": 4, "line_e": 0},
+                {"dial_s": 4, "line_s": 21, "dial_e": 4, "line_e": 21},
+                {"dial_s": 4, "line_s": 25, "dial_e": 49, "line_e": 0},
+                {"dial_s": 54, "line_s": 0, "dial_e": 54, "line_e": 8},
+                {"dial_s": 56, "line_s": 0, "dial_e": 57, "line_e": 0}
+            ]
+        },
+        {
+            "source": "7_Esquies_Nest",
+            "ranges": [
+                {"dial_s": 3, "line_s": 0, "dial_e": 3, "line_e": 3},
+                {"dial_s": 3, "line_s": 0, "dial_e": 3, "line_e": 3},
+                {"dial_s": 8, "line_s": 0, "dial_e": 8, "line_e": 2},
+                {"dial_s": 10, "line_s": 0, "dial_e": 15, "line_e": 0}
+            ]
+        },
+        {
+            "source": "8_Stone_Wave_Cliffs",
+            "ranges": [
+                {"dial_s": 2, "line_s": 0, "dial_e": 3, "line_e": 1}
+            ]
+        },
+        {
+            "source": "9_Meet_Verso",
+            "ranges": [
+                {"dial_s": 1, "line_s": 0, "dial_e": 1, "line_e": 8}
+            ]
+        },
+        {
+            "source": "10_Forgotten_Battlefields",
+            "ranges": [
+                {"dial_s": 2, "line_s": 0, "dial_e": 2, "line_e": 2},
+                {"dial_s": 8, "line_s": 7, "dial_e": 8, "line_e": 7},
+                {"dial_s": 11, "line_s": 0, "dial_e": 12, "line_e": 0},
+                {"dial_s": 18, "line_s": 0, "dial_e": 18, "line_e": 1}
+            ]
+        },
+        {
+            "source": "11_Monocos_Station",
+            "ranges": [
+                {"dial_s": 1, "line_s": 0, "dial_e": 1, "line_e": 2},
+                {"dial_s": 6, "line_s": 0, "dial_e": 26, "line_e": 0}
+            ]
+        },
+        {
+            "source": "12_Old_Lumiere",
+            "ranges": [
+                {"dial_s": 7, "line_s": 0, "dial_e": 7, "line_e": 2},
+                {"dial_s": 8, "line_s": 2, "dial_e": 8, "line_e": 4},
+                {"dial_s": 9, "line_s": 10, "dial_e": 9, "line_e": 10},
+                {"dial_s": 14, "line_s": 0, "dial_e": 15, "line_e": 3},
+                {"dial_s": 17, "line_s": 0, "dial_e": 17, "line_e": 2}
+            ]
+        },
+        {
+            "source": "14_Visages",
+            "ranges": [
+                {"dial_s": 2, "line_s": 0, "dial_e": 4, "line_e": 0},
+                {"dial_s": 5, "line_s": 4, "dial_e": 5, "line_e": 4},
+                {"dial_s": 7, "line_s": 0, "dial_e": 9, "line_e": 0},
+                {"dial_s": 12, "line_s": 0, "dial_e": 15, "line_e": 2},
+                {"dial_s": 20, "line_s": 0, "dial_e": 26, "line_e": 6}
+            ]
+        },
+        {
+            "source": "15_Sirene",
+            "ranges": [
+                {"dial_s": 8, "line_s": 0, "dial_e": 13, "line_e": 0}
+            ]
+        },
+        {
+            "source": "16_The_Monolith",
+            "ranges": [
+                {"dial_s": 0, "line_s": 0, "dial_e": 1, "line_e": 2},
+                {"dial_s": 10, "line_s": 0, "dial_e": 10, "line_e": 8},
+                {"dial_s": 17, "line_s": 0, "dial_e": 17, "line_e": 1}
+            ]
+        },
+        {
+            "source": "17_A_glimpse_in_the_past_Monolith_Year_49",
+            "ranges": [
+                {"dial_s": 0, "line_s": 0, "dial_e": 0, "line_e": 0},
+                {"dial_s": 1, "line_s": 25, "dial_e": 1, "line_e": 25}
+            ]
+        },
+        {
+            "source": "18_Back_to_Lumiere",
+            "ranges": [
+                {"dial_s": 12, "line_s": 0, "dial_e": 12, "line_e": 0}
+            ]
+        },
+        {
+            "source": "28_Lets_save_Lumiere",
+            "ranges": [
+                {"dial_s": 1, "line_s": 0, "dial_e": 3, "line_e": 0},
+                {"dial_s": 4, "line_s": 0, "dial_e": 7, "line_e": 1},
+                {"dial_s": 9, "line_s": 0, "dial_e": 9, "line_e": 0},
+                {"dial_s": 9, "line_s": 8, "dial_e": 9, "line_e": 10}
+            ]
+        }
+    ]
+}

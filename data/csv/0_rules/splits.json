@@ -1,0 +1,332 @@
+[
+  {
+    "source": "0_The_Gommage",
+    "ranges": [
+      {
+        "dial_s": 0,
+        "line_s": 0,
+        "dial_e": 3,
+        "line_e": 17
+      },
+      {
+        "dial_s": 4,
+        "line_s": 0,
+        "dial_e": 16,
+        "line_e": 13
+      },
+      {
+        "dial_s": 17,
+        "line_s": 0,
+        "dial_e": -1,
+        "line_e": -1
+      }
+    ],
+    "timestamps": ["04:36", "08:05", "11:46", "16:38", "19:34"]
+  },
+  {
+    "source": "1_Festival_de_lExpedition",
+    "ranges": [
+      {
+        "dial_s": 0,
+        "line_s": 0,
+        "dial_e": 9,
+        "line_e": 3
+      },
+      {
+        "dial_s": 12,
+        "line_s": 0,
+        "dial_e": 17,
+        "line_e": 12
+      },
+      {
+        "dial_s": 18,
+        "line_s": 0,
+        "dial_e": -1,
+        "line_e": -1
+      }
+    ],
+    "timestamps": ["03:35", "06:27", "09:13", "12:39", "15:52", "18:38"]
+  },
+  {
+    "source": "3_Spring_Meadows",
+    "ranges": [
+      {
+        "dial_s": 0,
+        "line_s": 0,
+        "dial_e": 7,
+        "line_e": 2
+      },
+      {
+        "dial_s": 8,
+        "line_s": 0,
+        "dial_e": -1,
+        "line_e": -1
+      }
+    ],
+    "timestamps": ["04:51", "08:07"]
+  },
+  {
+    "source": "4_Flying_Waters",
+    "ranges": [
+      {
+        "dial_s": 0,
+        "line_s": 0,
+        "dial_e": 4,
+        "line_e": 9
+      },
+      {
+        "dial_s": 5,
+        "line_s": 0,
+        "dial_e": 14,
+        "line_e": 7
+      },
+      {
+        "dial_s": 15,
+        "line_s": 0,
+        "dial_e": -1,
+        "line_e": -1
+      }
+    ],
+    "timestamps": ["04:00", "08:53"]
+  },
+  {
+    "source": "6_Gestral_Village",
+    "ranges": [
+      {
+        "dial_s": 3,
+        "line_s": 0,
+        "dial_e": 50,
+        "line_e": 8
+      },
+      {
+        "dial_s": 51,
+        "line_s": 0,
+        "dial_e": -1,
+        "line_e": -1
+      }
+    ],
+    "timestamps": ["04:31", "07:34"]
+  },
+  {
+    "source": "7_Esquies_Nest",
+    "ranges": [
+      {
+        "dial_s": 0,
+        "line_s": 0,
+        "dial_e": 2,
+        "line_e": 31
+      },
+      {
+        "dial_s": 4,
+        "line_s": 0,
+        "dial_e": 7,
+        "line_e": 13
+      },
+      {
+        "dial_s": 9,
+        "line_s": 0,
+        "dial_e": -1,
+        "line_e": -1
+      }
+    ],
+    "timestamps": ["04:05", "07:27"]
+  },
+  {
+    "source": "8_Stone_Wave_Cliffs",
+    "ranges": [
+      {
+        "dial_s": 0,
+        "line_s": 0,
+        "dial_e": 4,
+        "line_e": 4
+      },
+      {
+        "dial_s": 5,
+        "line_s": 0,
+        "dial_e": 8,
+        "line_e": 7
+      },
+      {
+        "dial_s": 9,
+        "line_s": 0,
+        "dial_e": -1,
+        "line_e": -1
+      }
+    ],
+    "timestamps": ["01:47", "05:24", "08:02"]
+  },
+  {
+    "source": "10_Forgotten_Battlefields",
+    "ranges": [
+      {
+        "dial_s": 0,
+        "line_s": 0,
+        "dial_e": 6,
+        "line_e": 13
+      },
+      {
+        "dial_s": 7,
+        "line_s": 0,
+        "dial_e": 13,
+        "line_e": 24
+      },
+      {
+        "dial_s": 15,
+        "line_s": 0,
+        "dial_e": -1,
+        "line_e": -1
+      }
+    ],
+    "timestamps": ["03:21", "06:27", "08:09", "12:11"]
+  },
+  {
+    "source": "12_Old_Lumiere",
+    "ranges": [
+      {
+        "dial_s": 0,
+        "line_s": 0,
+        "dial_e": 4,
+        "line_e": 20
+      },
+      {
+        "dial_s": 5,
+        "line_s": 0,
+        "dial_e": 9,
+        "line_e": 9
+      },
+      {
+        "dial_s": 10,
+        "line_s": 0,
+        "dial_e": 11,
+        "line_e": 18
+      },
+      {
+        "dial_s": 12,
+        "line_s": 0,
+        "dial_e": -1,
+        "line_e": -1
+      }
+    ],
+    "timestamps": ["04:51", "08:21", "12:49", "15:16"]
+  },
+  {
+    "source": "15_Sirene",
+    "ranges": [
+      {
+        "dial_s": 0,
+        "line_s": 0,
+        "dial_e": 7,
+        "line_e": 3
+      },
+      {
+        "dial_s": 14,
+        "line_s": 0,
+        "dial_e": -1,
+        "line_e": -1
+      }
+    ],
+    "timestamps": ["03:34"]
+  },
+  {
+    "source": "16_The_Monolith",
+    "ranges": [
+      {
+        "dial_s": 2,
+        "line_s": 0,
+        "dial_e": 11,
+        "line_e": 2
+      },
+      {
+        "dial_s": 12,
+        "line_s": 0,
+        "dial_e": 13,
+        "line_e": 12
+      },
+      {
+        "dial_s": 14,
+        "line_s": 0,
+        "dial_e": 16,
+        "line_e": 3
+      },
+      {
+        "dial_s": 18,
+        "line_s": 0,
+        "dial_e": 19,
+        "line_e": 9
+      },
+      {
+        "dial_s": 20,
+        "line_s": 0,
+        "dial_e": -1,
+        "line_e": -1
+      }
+    ],
+    "timestamps": ["03:28", "08:27", "12:53", "16:29"]
+  },
+  {
+    "source": "17_A_glimpse_in_the_past_Monolith_Year_49",
+    "ranges": [
+      {
+        "dial_s": 0,
+        "line_s": 0,
+        "dial_e": 1,
+        "line_e": 24
+      },
+      {
+        "dial_s": 2,
+        "line_s": 0,
+        "dial_e": -1,
+        "line_e": -1
+      }
+    ],
+    "timestamps": ["05:01"]
+  },
+  {
+    "source": "18_Back_to_Lumiere",
+    "ranges": [
+      {
+        "dial_s": 0,
+        "line_s": 0,
+        "dial_e": 2,
+        "line_e": 24
+      },
+      {
+        "dial_s": 3,
+        "line_s": 0,
+        "dial_e": 6,
+        "line_e": 11
+      },
+      {
+        "dial_s": 7,
+        "line_s": 0,
+        "dial_e": -1,
+        "line_e": -1
+      }
+    ],
+    "timestamps": ["02:45", "05:38", "09:08", "12:06"]
+  },
+  {
+    "source": "28_Lets_save_Lumiere",
+    "ranges": [
+      {
+        "dial_s": 0,
+        "line_s": 0,
+        "dial_e": 8,
+        "line_e": 15
+      },
+      {
+        "dial_s": 9,
+        "line_s": 1,
+        "dial_e": 10,
+        "line_e": 12
+      },
+      {
+        "dial_s": 11,
+        "line_s": 0,
+        "dial_e": -1,
+        "line_e": -1
+      }
+    ],
+    "timestamps": ["04:14", "10:49"]
+  }
+]

@@ -1,0 +1,40 @@
+[
+  {
+    "id": "chatcmpl-Cc7GGsE6NBc6iuxeXZirD6AhcFjPC",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"0_0\": {\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"surprise\": 0.0,\n    \"anger\": 0.0,\n    \"sadness\": 0.0,\n    \"fear\": 0.7,\n    \"neutral\": 0.3\n  },\n  \"0_1\": {\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"surprise\": 0.0,\n    \"anger\": 0.0,\n    \"sadness\": 0.0,\n    \"fear\": 0.9,\n    \"neutral\": 0.1\n  },\n  \"0_2\": {\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"surprise\": 0.0,\n    \"anger\": 0.6,\n    \"sadness\": 0.0,\n    \"fear\": 0.4,\n    \"neutral\": 0.0\n  },\n  \"0_3\": {\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"surprise\": 0.0,\n    \"anger\": 0.0,\n    \"sadness\": 0.0,\n    \"fear\": 0.8,\n    \"neutral\": 0.2\n  },\n  \"0_4\": {\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"surprise\": 0.0,\n    \"anger\": 0.0,\n    \"sadness\": 0.0,\n    \"fear\": 0.7,\n    \"neutral\": 0.3\n  },\n  \"0_5\": {\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"surprise\": 0.0,\n    \"anger\": 0.0,\n    \"sadness\": 0.0,\n    \"fear\": 0.9,\n    \"neutral\": 0.1\n  },\n  \"0_6\": {\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"surprise\": 0.0,\n    \"anger\": 0.0,\n    \"sadness\": 0.0,\n    \"fear\": 0.9,\n    \"neutral\": 0.1\n  },\n  \"0_7\": {\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"surprise\": 0.0,\n    \"anger\": 0.0,\n    \"sadness\": 0.0,\n    \"fear\": 1.0,\n    \"neutral\": 0.0\n  },\n  \"0_8\": {\n    \"happiness\": 0.0,\n    \"ambitious\": 0.0,\n    \"surprise\": 0.0,\n    \"anger\": 0.7,\n    \"sadness\": 0.0,\n    \"fear\": 0.3,\n    \"neutral\": 0.0\n  }\n}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": []
+        }
+      }
+    ],
+    "created": 1763200412,
+    "model": "gpt-audio-2025-08-28",
+    "object": "chat.completion",
+    "service_tier": "default",
+    "system_fingerprint": "fp_eda65ddc6d",
+    "usage": {
+      "completion_tokens": 686,
+      "prompt_tokens": 1859,
+      "total_tokens": 2545,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0,
+        "text_tokens": 686
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 1396,
+        "cached_tokens": 0,
+        "text_tokens": 463,
+        "image_tokens": 0
+      }
+    }
+  }
+]
