@@ -51,6 +51,6 @@ full_df.info(buf=buffer)
 info_str = buffer.getvalue()
 logging.info(info_str)
 
-out_path = emotions_scored_dir/f"Z_Final/{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.csv"
+out_path = emotions_scored_dir.parent/f"result/{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.csv"
 full_df.to_csv(out_path.as_posix(), **helpers.CSV_SETTINGS, index_label="row_index")
 logging.info(f"File exported at {out_path.as_posix()}")
