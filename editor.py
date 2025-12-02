@@ -21,7 +21,7 @@ class Editor(object):
                 os.remove(f.as_posix())
 
     def main(self):
-        edit_rules = json.load(open(helpers.CSV_PATH/"0_rules/rules.json", "r"))
+        edit_rules = json.load(open(helpers.BASE_PATH/"0_data_manip_cfg/edit_rules.json", "r"))
 
         logging.info("Beginning custom edits")
         for chapter_csv in (helpers.CSV_PATH/"1_raw").iterdir():

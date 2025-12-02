@@ -10,7 +10,7 @@ import helpers
 
 class Splitter(object):
     def __init__(self):
-        self.split_rules = json.load(open(helpers.CSV_PATH/"0_rules/splits.json", "r"))
+        self.split_rules = json.load(open(helpers.BASE_PATH/"0_data_manip_cfg/split_rules.json", "r"))
         self.csv_settings = helpers.CSV_SETTINGS
 
         self.delete_existing_files()
