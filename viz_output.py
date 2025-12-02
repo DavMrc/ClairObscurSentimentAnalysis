@@ -116,38 +116,19 @@ def load_dataframe(path_or_buffer):
 
     return df
 
-def plotly_barchart(df: pd.DataFrame, title:str=None):
+def barchart(df: pd.DataFrame, title:str=None):
     emotions = [c for c in df.columns.to_list() if c in COLOR_MAP.keys()]
     color_list = [COLOR_MAP.get(e, "#B3B3B3") for e in emotions]
 
-    df_melt = df.melt(
-        id_vars="id",
-        value_vars=emotions,
-        var_name="emotion",
-        value_name="value"
-    )
-    # Create Plotly bar chart
-    fig = px.bar(
-        df_melt,
+    if title:
+        st.write(title)
+
+    st.bar_chart(
+        df,
+        color=color_list,
         x="id",
-        y="value",
-        color="emotion",
-        color_discrete_sequence=color_list,
-        title=title,
-        height=500
+        y=emotions,
     )
-
-    fig.update_layout(
-        xaxis= {
-            "type": "category",
-            "tickangle": -90,
-            # "range": [-0.5, 30],
-            # "rangeslider": {"visible": True},
-        },
-        height=500
-    )
-
-    return fig
 
 def audio_player(path):
     if path:
@@ -198,8 +179,7 @@ if load_data_btn or st.session_state["load"]:
             col1, col2 = st.columns(2)
             with col1:
                 # Chart
-                fig = plotly_barchart(df)
-                st.plotly_chart(fig, use_container_width=True)
+                barchart(df)
 
             # Dialogues table
             with col2:
@@ -222,14 +202,12 @@ if load_data_btn or st.session_state["load"]:
             col1, col2 = st.columns(2)
             with col1:
                 # Selection chart
-                selection_fig = plotly_barchart(selection_df, title="Selection")
-                st.plotly_chart(selection_fig, use_container_width=True, key="selection_chart")
+                barchart(selection_df, title="Selection")
 
                 # Comparison chart
                 comparison_df = load_dataframe(comparison_csv_path)
                 comparison_df = comparison_df[filters_mask]
-                comparison_fig = plotly_barchart(comparison_df, title="Comparison")
-                st.plotly_chart(comparison_fig, use_container_width=True, key="comparison_chart")
+                barchart(comparison_df, title="Comparison")
 
             # Dialogues table
             with col2:
