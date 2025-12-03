@@ -1,5 +1,6 @@
 import argparse
 import logging
+import textwrap
 # custom scripts
 from editor import Editor
 from scraper import Scraper
@@ -10,7 +11,15 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     logger = logging.getLogger(__name__)
 
-    parser = argparse.ArgumentParser(description="Run the scraper and editor.")
+    parser = argparse.ArgumentParser(
+        description=textwrap.dedent(
+            """
+            Run the data preparation pipeline. Does not include classification (i.e. model prompting).
+            To run the data classification, use 'python classifier.py' which will have a cmd-line UI
+            """
+        ),
+        formatter_class=argparse.RawTextHelpFormatter
+    )
     parser.add_argument("--no-scraper", action="store_true", help="Do not run the Scraper")
     parser.add_argument("--no-editor", action="store_true", help="Do not run the Editor")
     parser.add_argument("--no-splitter", action="store_true", help="Do not run the Splitter")
