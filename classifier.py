@@ -238,15 +238,6 @@ class Classifier(object):
         self.pairs = self.csv_mp3_split_pairs()
         self.csv_settings = helpers.CSV_SETTINGS
 
-        in_notebook = helpers.in_notebook()
-        if in_notebook:
-            # Configure so that logs appear also in the notebook cells
-            logger = logging.getLogger()
-            logger.setLevel(logging.DEBUG)
-        else:
-            logging.basicConfig(level=logging.INFO)
-            logger = logging.getLogger(__name__)
-
         # Target emotions
         self._negative_emotions = ["anger", "sadness", "fear"]
         self._positive_emotions = ["happiness", "ambitious", "surprise"]
@@ -508,6 +499,9 @@ class Classifier(object):
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
+    logger = logging.getLogger(__name__)
+
     classifier = Classifier()
     classifier.authorize()
 
