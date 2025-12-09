@@ -33,4 +33,43 @@ $ pip install -r requirements.txt
 ```
 
 ## Documentation
-Coming soon! I promise!
+Check out the [Wiki tab](https://github.com/DavMrc/ClairObscurSentimentAnalysis/wiki)
+
+## Classified chapters
+For technical reasons discussed in the documentation, I have classified only some chapters of the game. Specifically, only the **required** chapters were classified, all the optional ones have only been scraped.
+
+Here is a table to summarize
+
+| Chapter                                   | Scraped   | Classified   |
+|:------------------------------------------|:-------------|:----------------|
+| 0_The_Gommage                             | ✅           | ✅              |
+| 1_Festival_de_lExpedition                 | ✅           | ✅              |
+| 2_The_Beach                               | ✅           | ✅              |
+| 3_Spring_Meadows                          | ✅           | ✅              |
+| 4_Flying_Waters                           | ✅           | ✅              |
+| 5_Ancient_Sanctuary                       | ✅           | ✅              |
+| 6_Gestral_Village                         | ✅           | ✅              |
+| 7_Esquies_Nest                            | ✅           | ✅              |
+| 8_Stone_Wave_Cliffs                       | ✅           | ✅              |
+| 9_Meet_Verso                              | ✅           | ✅              |
+| 10_Forgotten_Battlefields                 | ✅           | ✅              |
+| 11_Monocos_Station                        | ✅           | ✅              |
+| 12_Old_Lumiere                            | ✅           | ✅              |
+| 13_Falling_Leaves                         | ✅           | ❌              |
+| 14_Visages                                | ✅           | ✅              |
+| 15_Sirene                                 | ✅           | ✅              |
+| 16_The_Monolith                           | ✅           | ✅              |
+| 17_A_glimpse_in_the_past_Monolith_Year_49 | ✅           | ✅              |
+| 18_Back_to_Lumiere                        | ✅           | ✅              |
+| 19_Frozen_Hearts                          | ✅           | ❌              |
+| 20_Endless_Night_Sanctuary                | ✅           | ❌              |
+| 21_The_Reacher                            | ✅           | ❌              |
+| 22_Sacred_River                           | ✅           | ❌              |
+| 23_Sirenes_Dress                          | ✅           | ❌              |
+| 24_Flying_Manor                           | ✅           | ❌              |
+| 25_Painting_Workshop                      | ✅           | ❌              |
+| 26_Endless_Tower                          | ✅           | ❌              |
+| 27_Renoirs_Drafts                         | ✅           | ❌              |
+| 28_Lets_save_Lumiere                      | ✅           | ✅              |
+| 29_A_Life_to_Paint                        | ✅           | ✅              |
+| 30_A_Life_to_Love                         | ✅           | ✅              |
