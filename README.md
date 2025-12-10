@@ -14,9 +14,18 @@ My goal was to associate at each line of dialogue a set of emotions, evaluating 
 ## How to use
 You can freely clone the repo and use the data contained in it. In particular, I recommend taking a look at the [result folder](.data/output/result/) where you can find a ready-to-use dataset (also published on [Kaggle](https://www.kaggle.com/datasets/davidemarcantoni/clair-obscur-expedition-33-dialogues-emotions))
 
-To avoid downloading large files (WAV and MP3) you can skip them using
+To avoid downloading large files (WAV and MP3) you can skip them by running the following command
+
+Linux:
 ```bash
 $ GIT_LFS_SKIP_SMUDGE=1 git clone https://github.com/DavMrc/ClairObscurSentimentAnalysis
+$ cd ClairObscurSentimentAnalysis
+```
+
+Windows:
+```bash
+$ set GIT_LFS_SKIP_SMUDGE=1
+$ git clone https://github.com/DavMrc/ClairObscurSentimentAnalysis
 $ cd ClairObscurSentimentAnalysis
 ```
 
