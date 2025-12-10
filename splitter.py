@@ -3,7 +3,8 @@ import logging
 import json
 import os
 import pandas as pd
-from pydub import AudioSegment
+import wave
+import lameenc
 # custom scripts
 import helpers
 
@@ -97,41 +98,82 @@ class Splitter(object):
         Split a WAV file into MP3 chunks based on timestamps in self.split_rules.
         Uses only pydub (no ffmpeg needed for WAV input).
         """
-        # Collect timestamps for this source
         timestamps = []
         for split_rule in self.split_rules:
             if split_rule["source"] == path.stem:
                 timestamps = [self.__time_to_seconds(t) for t in split_rule["timestamps"]]
 
-        # Destination folder
         out_dir = path.parent.parent / "3_splits"
-        if timestamps:
-            # Load WAV file using pure Python (no ffmpeg)
-            audio = AudioSegment.from_wav(path.as_posix())
 
-            # Convert timestamps to milliseconds
-            split_points = [0] + [t * 1000 for t in timestamps] + [len(audio)]
+        # Load the WAV
+        params, pcm = self.__read_wav(path)
+        duration_ms = int(params["nframes"] / params["framerate"] * 1000)
+
+        if timestamps:
+            # Convert timestamps to ms
+            split_points = [0] + [t * 1000 for t in timestamps] + [duration_ms]
 
             for i in range(len(split_points) - 1):
-                start_ms = split_points[i]
-                end_ms = split_points[i + 1]
+                start_ms: int = split_points[i]
+                end_ms: int = split_points[i + 1]
 
-                part = audio[start_ms:end_ms]
+                pcm_slice = self.__slice_pcm(pcm, params, start_ms, end_ms)
                 out_name = out_dir / f"{path.stem}_{i}.mp3"
 
-                # Export each split as MP3
-                part.export(out_name.as_posix(), format="mp3")
+                self.__write_mp3(pcm_slice, params, out_name)
 
-                start_timestamp = self.__seconds_to_time(start_ms / 1000)
-                end_timestamp = self.__seconds_to_time(end_ms / 1000)
-                logging.info(f"Wrote audio split {path.stem}_{i}: {start_timestamp}s → {end_timestamp}s")
+                logging.info(out_name.as_posix())
+                logging.info(
+                    f"Wrote audio split {path.stem}_{i}: "
+                    f"{self.__seconds_to_time(start_ms/1000)}s → {self.__seconds_to_time(end_ms/1000)}s"
+                )
 
         else:
-            # No split rule → copy file as-is (still convert to MP3)
-            audio = AudioSegment.from_wav(path.as_posix())
-            out_path = out_dir / f"{path.stem}.mp3"
-            audio.export(out_path.as_posix(), format="mp3")
+            # No timestamps: convert whole file
+            out_name = out_dir / f"{path.stem}.mp3"
+            self.__write_mp3(pcm, params, out_name)
             logging.info(f"{path.name} copied as-is (converted to MP3)")
+
+    def __read_wav(self, path: pathlib.Path):
+        """Reads PCM WAV and returns (params, raw_bytes)."""
+        with wave.open(path.as_posix(), "rb") as w:
+            params = {
+                "channels": w.getnchannels(),
+                "sampwidth": w.getsampwidth(),
+                "framerate": w.getframerate(),
+                "nframes": w.getnframes()
+            }
+            pcm = w.readframes(params["nframes"])
+        return params, pcm
+
+    def __slice_pcm(self, pcm: bytes, params: dict, start_ms: int, end_ms: int):
+        """Return PCM slice between start/end in ms."""
+        frame_rate = params["framerate"]
+        channels = params["channels"]
+        sampwidth = params["sampwidth"]
+
+        bytes_per_frame = channels * sampwidth
+
+        start_frame = int(start_ms / 1000 * frame_rate)
+        end_frame = int(end_ms / 1000 * frame_rate)
+
+        start_byte = start_frame * bytes_per_frame
+        end_byte = end_frame * bytes_per_frame
+
+        return pcm[start_byte:end_byte]
+
+    def __write_mp3(self, pcm_slice: bytes, params: dict, outpath: pathlib.Path):
+        encoder = lameenc.Encoder()
+        encoder.set_in_sample_rate(params["framerate"])
+        encoder.set_channels(params["channels"])
+        encoder.set_bit_rate(192)
+        encoder.set_quality(2)
+
+        mp3 = encoder.encode(pcm_slice)
+        mp3 += encoder.flush()
+
+        with open(outpath.as_posix(), "wb") as f:
+            f.write(mp3)
 
     def __time_to_seconds(self, t:str):
         """Convert 'MM:SS' or 'HH:MM:SS' string to seconds"""

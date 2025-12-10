@@ -45,7 +45,7 @@ if __name__ == "__main__":
         editor = Editor(cmd_line_args=args)
         editor.main()
 
-        if args.no_splitter is False:
-            logging.info("### BEGIN SPLITTER ###")
-            splitter = Splitter()
-            splitter.main()
+    if args.no_splitter is False:
+        logging.info("### BEGIN SPLITTER ###")
+        splitter = Splitter()
+        splitter.main()
