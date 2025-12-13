@@ -11,6 +11,9 @@ My goal was to associate at each line of dialogue a set of emotions, evaluating 
 - <a href="https://public.tableau.com/views/ClairObscurExpedition33EmotionClassification/Dashboard"><img src="./imgs/tableau.png" >Tableau Public Free Dashboard</a>
 - <img src="./imgs/youtube.png" > Walkthrough explaination (coming soon!)
 
+## Documentation
+Check out the [Wiki tab](https://github.com/DavMrc/ClairObscurSentimentAnalysis/wiki)
+
 ## How to use
 You can freely clone the repo and use the data contained in it. In particular, I recommend taking a look at the [result folder](.data/output/result/) where you can find a ready-to-use dataset (also published on [Kaggle](https://www.kaggle.com/datasets/davidemarcantoni/clair-obscur-expedition-33-dialogues-emotions))
 
@@ -40,9 +43,6 @@ $ python -m venv venv
 $ source venv/bin/activate
 $ pip install -r requirements.txt
 ```
-
-## Documentation
-Check out the [Wiki tab](https://github.com/DavMrc/ClairObscurSentimentAnalysis/wiki)
 
 ## Classified chapters
 For technical reasons discussed in the documentation, I have classified only some chapters of the game. Specifically, only the **required** chapters were classified, all the optional ones have only been scraped.
